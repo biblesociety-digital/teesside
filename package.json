@@ -1,0 +1,12 @@
+{
+  "name": "events-map-site",
+  "private": true,
+  "scripts": {
+    "build:css": "sass scss/styles.scss css/styles.css --no-source-map",
+    "build:shared-css": "sass scss/styles.scss css/styles.css --no-source-map",
+    "watch:css": "sass --watch scss/styles.scss:css/styles.css --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.89.0"
+  }
+}

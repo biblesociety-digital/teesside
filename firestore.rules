@@ -1,0 +1,174 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email is string;
+    }
+
+    function adminEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function isInitialGlobalAdminEmail() {
+      return isSignedIn() && adminEmail() == 'peter.cahill@biblesociety.org.uk';
+    }
+
+    function isInitialGlobalAdminDoc(email) {
+      return email == 'peter.cahill@biblesociety.org.uk';
+    }
+
+    function adminDoc() {
+      return /databases/$(database)/documents/adminUsers/$(adminEmail());
+    }
+
+    function isActiveAdmin() {
+      return isInitialGlobalAdminEmail() || (isSignedIn() &&
+        exists(adminDoc()) &&
+        get(adminDoc()).data.disabled != true &&
+        get(adminDoc()).data.role in ['admin', 'globalAdmin']);
+    }
+
+    function isGlobalAdmin() {
+      return isInitialGlobalAdminEmail() || (isSignedIn() &&
+        exists(adminDoc()) &&
+        get(adminDoc()).data.disabled != true &&
+        get(adminDoc()).data.role == 'globalAdmin');
+    }
+
+    function hasOnlyKeys(keys) {
+      return request.resource.data.keys().hasOnly(keys);
+    }
+
+    function isOptionalString(field, maxLength) {
+      return !(field in request.resource.data) ||
+        (request.resource.data[field] is string && request.resource.data[field].size() <= maxLength);
+    }
+
+    function isRequiredString(field, maxLength) {
+      return field in request.resource.data &&
+        request.resource.data[field] is string &&
+        request.resource.data[field].size() > 0 &&
+        request.resource.data[field].size() <= maxLength;
+    }
+
+    function isOptionalTimestamp(field) {
+      return !(field in request.resource.data) || request.resource.data[field] is timestamp;
+    }
+
+    function isOptionalBool(field) {
+      return !(field in request.resource.data) || request.resource.data[field] is bool;
+    }
+
+    function isOptionalProviderIds() {
+      return !('providerIds' in request.resource.data) ||
+        (request.resource.data.providerIds is list &&
+          request.resource.data.providerIds.size() <= 5 &&
+          request.resource.data.providerIds.hasOnly(['password', 'google.com']));
+    }
+
+    function isValidDateString(field) {
+      return isRequiredString(field, 10) &&
+        request.resource.data[field].matches('^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$');
+    }
+
+    function isValidLocation() {
+      return hasOnlyKeys(['name', 'address', 'postcode', 'latitude', 'longitude', 'contact']) &&
+        isRequiredString('name', 160) &&
+        isRequiredString('address', 240) &&
+        isRequiredString('postcode', 16) &&
+        isOptionalString('contact', 160) &&
+        request.resource.data.latitude is number &&
+        request.resource.data.longitude is number &&
+        request.resource.data.latitude >= -90 &&
+        request.resource.data.latitude <= 90 &&
+        request.resource.data.longitude >= -180 &&
+        request.resource.data.longitude <= 180;
+    }
+
+    function isValidEvent() {
+      return hasOnlyKeys(['title', 'description', 'ageGroup', 'startDate', 'endDate', 'dayOfWeek', 'time', 'eventbriteUrl', 'active', 'status']) &&
+        isRequiredString('title', 120) &&
+        isOptionalString('description', 1200) &&
+        isOptionalString('ageGroup', 160) &&
+        isValidDateString('startDate') &&
+        isValidDateString('endDate') &&
+        request.resource.data.startDate <= request.resource.data.endDate &&
+        isOptionalString('dayOfWeek', 16) &&
+        isOptionalString('time', 32) &&
+        isOptionalString('eventbriteUrl', 500) &&
+        (request.resource.data.eventbriteUrl == '' || request.resource.data.eventbriteUrl.matches('^https?://.+')) &&
+        request.resource.data.active is bool &&
+        request.resource.data.status in ['active', 'inactive', 'over'] &&
+        request.resource.data.active == (request.resource.data.status == 'active');
+    }
+
+    function isValidAdminUser(email) {
+      return hasOnlyKeys(['email', 'displayName', 'role', 'disabled', 'uid', 'providerIds', 'lastLoginAt', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy']) &&
+        isRequiredString('email', 254) &&
+        email == email.lower() &&
+        request.resource.data.email == email &&
+        isOptionalString('displayName', 160) &&
+        request.resource.data.role in ['admin', 'globalAdmin'] &&
+        isOptionalBool('disabled') &&
+        isOptionalProviderIds() &&
+        isOptionalString('uid', 160) &&
+        isOptionalString('createdBy', 254) &&
+        isOptionalString('updatedBy', 254) &&
+        isOptionalTimestamp('createdAt') &&
+        isOptionalTimestamp('updatedAt') &&
+        isOptionalTimestamp('lastLoginAt') &&
+        (!isInitialGlobalAdminDoc(email) ||
+          (request.resource.data.role == 'globalAdmin' && request.resource.data.disabled != true)) &&
+        (email != adminEmail() ||
+          (request.resource.data.role == 'globalAdmin' && request.resource.data.disabled != true));
+    }
+
+    function isValidAttendanceReport() {
+      return hasOnlyKeys(['locationId', 'locationName', 'eventId', 'eventTitle', 'sessionNumber', 'sessionDate', 'attendedCount', 'notes', 'createdAt']) &&
+        isRequiredString('locationId', 120) &&
+        isRequiredString('locationName', 120) &&
+        isRequiredString('eventId', 120) &&
+        isRequiredString('eventTitle', 120) &&
+        exists(/databases/$(database)/documents/locations/$(request.resource.data.locationId)) &&
+        exists(/databases/$(database)/documents/locations/$(request.resource.data.locationId)/events/$(request.resource.data.eventId)) &&
+        request.resource.data.sessionNumber is number &&
+        request.resource.data.sessionNumber >= 1 &&
+        request.resource.data.sessionNumber <= 4 &&
+        isValidDateString('sessionDate') &&
+        request.resource.data.attendedCount is number &&
+        request.resource.data.attendedCount >= 0 &&
+        request.resource.data.attendedCount <= 10000 &&
+        isOptionalString('notes', 500) &&
+        isOptionalTimestamp('createdAt');
+    }
+
+    match /locations/{locationId} {
+      allow read: if true;
+      allow create, update: if isActiveAdmin() && isValidLocation();
+      allow delete: if isActiveAdmin();
+
+      match /events/{eventId} {
+        allow read: if true;
+        allow create, update: if isActiveAdmin() && isValidEvent();
+        allow delete: if isActiveAdmin();
+      }
+    }
+
+    match /adminUsers/{email} {
+      allow read: if isGlobalAdmin() || (isSignedIn() && email == adminEmail());
+      allow create, update: if isGlobalAdmin() && isValidAdminUser(email);
+      allow delete: if isGlobalAdmin() && email != adminEmail() && !isInitialGlobalAdminDoc(email);
+    }
+
+    match /attendanceReports/{reportId} {
+      allow create: if isValidAttendanceReport();
+      allow read: if isActiveAdmin();
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

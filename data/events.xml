@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locations>
+  <location id="loc-001">
+    <name>Stockton Methodist Church</name>
+    <address>119 Yarm Road, Stockton-on-Tees, TS18 3HJ</address>
+    <postcode>TS18 3HJ</postcode>
+    <latitude>54.5680</latitude>
+    <longitude>-1.3200</longitude>
+    <denomination>Methodist</denomination>
+    <contact>01642 603203</contact>
+    <events>
+      <event id="evt-001">
+        <title>Youth Fellowship Group</title>
+        <description>Weekly gathering for young people</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>19:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-002">
+        <title>Sunday School</title>
+        <description>Religious education for children</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>10:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-002">
+    <name>Christ Church Stockton</name>
+    <address>Church Street, Stockton-on-Tees, TS18 1TH</address>
+    <postcode>TS18 1TH</postcode>
+    <latitude>54.5700</latitude>
+    <longitude>-1.3100</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 602423</contact>
+    <events>
+      <event id="evt-003">
+        <title>Youth Group</title>
+        <description>Social and spiritual activities for teenagers</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-15</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Friday</dayOfWeek>
+        <time>19:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-003">
+    <name>Middlesbrough Baptist Church</name>
+    <address>Albert Road, Middlesbrough, TS1 2PF</address>
+    <postcode>TS1 2PF</postcode>
+    <latitude>54.5760</latitude>
+    <longitude>-1.2300</longitude>
+    <denomination>Baptist</denomination>
+    <contact>01642 245789</contact>
+    <events>
+      <event id="evt-004">
+        <title>Bible Study Group</title>
+        <description>Weekly Bible discussion for adults</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-12</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Tuesday</dayOfWeek>
+        <time>19:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-005">
+        <title>Children's Activities</title>
+        <description>Crafts and games for children</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-17</startDate>
+        <endDate>2026-09-30</endDate>
+        <dayOfWeek>Saturday</dayOfWeek>
+        <time>14:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-004">
+    <name>Thornaby Methodist Church</name>
+    <address>Glamorgan Street, Thornaby, TS17 6SJ</address>
+    <postcode>TS17 6SJ</postcode>
+    <latitude>54.5550</latitude>
+    <longitude>-1.3600</longitude>
+    <denomination>Methodist</denomination>
+    <contact>01642 613456</contact>
+    <events>
+      <event id="evt-006">
+        <title>Teen Night</title>
+        <description>Games, food and fellowship</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-20</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Wednesday</dayOfWeek>
+        <time>18:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-005">
+    <name>Billingham St Cuthbert's Church</name>
+    <address>The Green, Billingham, TS23 1LF</address>
+    <postcode>TS23 1LF</postcode>
+    <latitude>54.5850</latitude>
+    <longitude>-1.2700</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 360654</contact>
+    <events>
+      <event id="evt-007">
+        <title>Adult Fellowship</title>
+        <description>Social and spiritual gathering</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-14</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Thursday</dayOfWeek>
+        <time>19:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-006">
+    <name>Redcar Community Church</name>
+    <address>High Street, Redcar, TS10 1DJ</address>
+    <postcode>TS10 1DJ</postcode>
+    <latitude>54.6050</latitude>
+    <longitude>-1.0700</longitude>
+    <denomination>Non-denominational</denomination>
+    <contact>01642 483521</contact>
+    <events>
+      <event id="evt-008">
+        <title>Youth Outreach Event</title>
+        <description>Community service and fun activities</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-25</startDate>
+        <endDate>2026-10-31</endDate>
+        <dayOfWeek>Saturday</dayOfWeek>
+        <time>10:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-007">
+    <name>Hartlepool All Saints Church</name>
+    <address>Church Street, Hartlepool, TS24 7EA</address>
+    <postcode>TS24 7EA</postcode>
+    <latitude>54.6920</latitude>
+    <longitude>-1.2000</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01429 272345</contact>
+    <events>
+      <event id="evt-009">
+        <title>Young Adults Group</title>
+        <description>Fellowship and activities for 18-30s</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-18</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Monday</dayOfWeek>
+        <time>19:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-008">
+    <name>Eston St Mary's Church</name>
+    <address>High Street, Eston, TS6 9NT</address>
+    <postcode>TS6 9NT</postcode>
+    <latitude>54.5300</latitude>
+    <longitude>-1.2200</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 452789</contact>
+    <events>
+      <event id="evt-010">
+        <title>Children's Club</title>
+        <description>Fun activities and Bible stories</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-22</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Friday</dayOfWeek>
+        <time>16:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-009">
+    <name>Yarm Parish Church</name>
+    <address>The High Street, Yarm, TS15 9AU</address>
+    <postcode>TS15 9AU</postcode>
+    <latitude>54.5350</latitude>
+    <longitude>-1.4150</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 782263</contact>
+    <events>
+      <event id="evt-011">
+        <title>Confirmation Classes</title>
+        <description>Religious education and preparation</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-06-01</startDate>
+        <endDate>2026-08-31</endDate>
+        <dayOfWeek>Saturday</dayOfWeek>
+        <time>11:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-010">
+    <name>Seaton Carew Methodist Church</name>
+    <address>Church Road, Seaton Carew, TS25 1AE</address>
+    <postcode>TS25 1AE</postcode>
+    <latitude>54.6850</latitude>
+    <longitude>-1.1650</longitude>
+    <denomination>Methodist</denomination>
+    <contact>01429 266421</contact>
+    <events>
+      <event id="evt-012">
+        <title>Summer Holiday Club</title>
+        <description>Week-long activities for children</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-07-13</startDate>
+        <endDate>2026-07-17</endDate>
+        <dayOfWeek>Monday-Friday</dayOfWeek>
+        <time>09:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-011">
+    <name>North Ormesby Church of England</name>
+    <address>Marton Road, Middlesbrough, TS3 9TZ</address>
+    <postcode>TS3 9TZ</postcode>
+    <latitude>54.5820</latitude>
+    <longitude>-1.2100</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 354678</contact>
+    <events>
+      <event id="evt-013">
+        <title>Weekly Prayers</title>
+        <description>Community prayer and reflection time</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Wednesday</dayOfWeek>
+        <time>10:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-014">
+        <title>Kids Craft Club</title>
+        <description>Creative activities and games</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-16</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Saturday</dayOfWeek>
+        <time>13:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-012">
+    <name>Grangetown Baptist Chapel</name>
+    <address>Main Street, Grangetown, TS6 6AL</address>
+    <postcode>TS6 6AL</postcode>
+    <latitude>54.5400</latitude>
+    <longitude>-1.2500</longitude>
+    <denomination>Baptist</denomination>
+    <contact>01642 483956</contact>
+    <events>
+      <event id="evt-015">
+        <title>Praise & Worship Night</title>
+        <description>Music and worship evening</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-15</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Friday</dayOfWeek>
+        <time>20:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-016">
+        <title>Sunday School</title>
+        <description>Children's religious education</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>11:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-013">
+    <name>Marton Methodist Church</name>
+    <address>Acklam Road, Middlesbrough, TS7 8EQ</address>
+    <postcode>TS7 8EQ</postcode>
+    <latitude>54.5500</latitude>
+    <longitude>-1.1900</longitude>
+    <denomination>Methodist</denomination>
+    <contact>01642 327145</contact>
+    <events>
+      <event id="evt-017">
+        <title>Men's Breakfast Group</title>
+        <description>Social gathering with breakfast and discussion</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-12</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Saturday</dayOfWeek>
+        <time>08:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-018">
+        <title>Junior Church</title>
+        <description>Fun learning for children with games and stories</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-11</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>10:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-014">
+    <name>Acklam St Mary's Church</name>
+    <address>Grange Road, Middlesbrough, TS5 7SA</address>
+    <postcode>TS5 7SA</postcode>
+    <latitude>54.5650</latitude>
+    <longitude>-1.1750</longitude>
+    <denomination>Church of England</denomination>
+    <contact>01642 811234</contact>
+    <events>
+      <event id="evt-019">
+        <title>Women's Fellowship</title>
+        <description>Monthly gathering for women of all ages</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-14</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Thursday</dayOfWeek>
+        <time>14:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-020">
+        <title>Toddler Time</title>
+        <description>Activity group for young children and parents</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-13</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Wednesday</dayOfWeek>
+        <time>10:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-015">
+    <name>Coulby Newham Community Church</name>
+    <address>The Green, Coulby Newham, TS8 8PP</address>
+    <postcode>TS8 8PP</postcode>
+    <latitude>54.5750</latitude>
+    <longitude>-1.1500</longitude>
+    <denomination>Non-denominational</denomination>
+    <contact>01642 592847</contact>
+    <events>
+      <event id="evt-021">
+        <title>Community Lunch</title>
+        <description>Social gathering with free lunch for all ages</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-17</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>12:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-022">
+        <title>Teen Drop-In</title>
+        <description>Informal space for young people to hang out</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-19</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Tuesday</dayOfWeek>
+        <time>17:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-016">
+    <name>Eaglescliffe United Reformed Church</name>
+    <address>High Street, Eaglescliffe, TS16 0QH</address>
+    <postcode>TS16 0QH</postcode>
+    <latitude>54.5200</latitude>
+    <longitude>-1.4000</longitude>
+    <denomination>United Reformed</denomination>
+    <contact>01642 782456</contact>
+    <events>
+      <event id="evt-023">
+        <title>Study Group</title>
+        <description>Bible study and theological discussion</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-11</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Monday</dayOfWeek>
+        <time>19:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-024">
+        <title>Youth Band Practice</title>
+        <description>Music and instrument practice for young musicians</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-12</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Tuesday</dayOfWeek>
+        <time>18:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-017">
+    <name>Stockton North Community Church</name>
+    <address>Norton Road, Stockton-on-Tees, TS19 0QJ</address>
+    <postcode>TS19 0QJ</postcode>
+    <latitude>54.5800</latitude>
+    <longitude>-1.3400</longitude>
+    <denomination>Non-denominational</denomination>
+    <contact>01642 604821</contact>
+    <events>
+      <event id="evt-025">
+        <title>Sunday Service with Coffee</title>
+        <description>Worship service followed by refreshments</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>10:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-026">
+        <title>After-School Club</title>
+        <description>Games, snacks and activities</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-14</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Thursday</dayOfWeek>
+        <time>15:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-018">
+    <name>Stockton South Roman Catholic Church</name>
+    <address>Bishopton Road, Stockton-on-Tees, TS17 0AA</address>
+    <postcode>TS17 0AA</postcode>
+    <latitude>54.5600</latitude>
+    <longitude>-1.3300</longitude>
+    <denomination>Roman Catholic</denomination>
+    <contact>01642 612345</contact>
+    <events>
+      <event id="evt-027">
+        <title>Rosary & Tea</title>
+        <description>Prayer group followed by social time</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-13</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Wednesday</dayOfWeek>
+        <time>14:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-028">
+        <title>Children's Mass</title>
+        <description>Family-friendly service with activities</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-10</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>09:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-019">
+    <name>West Hartlepool Pentecostal Church</name>
+    <address>Clarence Road, Hartlepool, TS26 8RU</address>
+    <postcode>TS26 8RU</postcode>
+    <latitude>54.6780</latitude>
+    <longitude>-1.1800</longitude>
+    <denomination>Pentecostal</denomination>
+    <contact>01429 234567</contact>
+    <events>
+      <event id="evt-029">
+        <title>Prayer Meeting</title>
+        <description>Evening prayer and intercession</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-16</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Friday</dayOfWeek>
+        <time>19:30</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-030">
+        <title>Youth Praise Night</title>
+        <description>Contemporary worship for young people</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-18</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Sunday</dayOfWeek>
+        <time>17:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+
+  <location id="loc-020">
+    <name>Port Clarence Methodist Chapel</name>
+    <address>Church Street, Stockton-on-Tees, TS18 2HJ</address>
+    <postcode>TS18 2HJ</postcode>
+    <latitude>54.6020</latitude>
+    <longitude>-1.3850</longitude>
+    <denomination>Methodist</denomination>
+    <contact>01642 594738</contact>
+    <events>
+      <event id="evt-031">
+        <title>Older Adults Circle</title>
+        <description>Social activities for senior members</description>
+        <ageGroup>18+</ageGroup>
+        <startDate>2026-05-19</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Monday</dayOfWeek>
+        <time>14:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+      <event id="evt-032">
+        <title>Kids Bible Story Time</title>
+        <description>Interactive Bible stories for young children</description>
+        <ageGroup>under 18</ageGroup>
+        <startDate>2026-05-20</startDate>
+        <endDate>2026-12-31</endDate>
+        <dayOfWeek>Wednesday</dayOfWeek>
+        <time>16:00</time>
+        <eventbriteUrl>https://www.eventbrite.com/</eventbriteUrl>
+      </event>
+    </events>
+  </location>
+</locations>

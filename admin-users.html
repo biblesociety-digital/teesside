@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data: https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self' https://www.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com; frame-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com; child-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com;">
+  <title>User Administration - bibleconversations.co.uk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="admin-page" data-admin-page="users">
+  <header class="app-bar">
+    <div class="container">
+      <div class="header-content">
+        <a class="brand-link" href="admin.html" aria-label="Bible Conversations admin">
+          <img class="brand-logo" src="img/logo.webp" alt="Bible Conversations logo" />
+          <img class="teesside-logo header-teesside-logo" src="img/Teesside logo.svg" alt="Teesside" />
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <nav class="top-nav" id="primaryNav" aria-label="Primary navigation">
+          <a href="index.html">Events Map</a>
+          <a href="faq.html">FAQ</a>
+          <a href="admin-reports.html">Reports</a>
+          <a id="logoutNav" href="#" style="display: none;">Logout</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div id="loginSection">
+    <main class="container login-main">
+      <section class="login-card">
+        <div class="login-card-header">
+          <span class="admin-eyebrow">Admin access</span>
+          <h2>Sign in</h2>
+          <p>Use an authorised Firebase account to manage locations, events, and public map content.</p>
+        </div>
+        <div class="form-full">
+          <div class="form-group">
+            <label for="adminEmail">Email</label>
+            <input class="mui-input" type="email" id="adminEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input class="mui-input" type="password" id="adminPassword" placeholder="Firebase password" autocomplete="current-password" />
+          </div>
+          <div class="auth-action-grid">
+            <button class="mui-button mui-button-contained" type="button" id="adminEmailLoginButton">
+              <span class="material-symbols-outlined" aria-hidden="true">login</span>
+              Sign in
+            </button>
+            <button class="mui-button mui-button-outlined auth-google-button" type="button" id="adminGoogleLoginButton">
+              <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+              Google
+            </button>
+          </div>
+          <p class="auth-note" id="authHelpText">Your email must be listed by a global admin before you can access this area.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="adminContent" style="display: none;">
+    <main class="container admin-main">
+      <section class="admin-hero">
+        <div>
+          <span class="admin-eyebrow">Global admin</span>
+          <h2>User administration</h2>
+          <p>Add Firebase Auth emails, set admin roles, and remove access when people no longer need it.</p>
+          <p class="admin-session-note" id="adminSessionSummary"></p>
+        </div>
+        <a class="admin-hero-link" href="admin.html">
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          Dashboard
+        </a>
+      </section>
+
+      <nav class="admin-area-nav" aria-label="Admin area">
+        <a href="admin.html" data-admin-nav-link="dashboard">
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          Dashboard
+        </a>
+        <a href="admin-reports.html" data-admin-nav-link="reports">
+          <span class="material-symbols-outlined" aria-hidden="true">monitoring</span>
+          Reports
+        </a>
+        <a href="admin-users.html" data-admin-nav-link="users" data-global-admin-only hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+          User administration
+        </a>
+      </nav>
+
+      <section class="admin-section" id="globalAdminDenied" hidden>
+        <div class="admin-section-header">
+          <div>
+            <span class="admin-eyebrow">Restricted</span>
+            <h2>Global admin required</h2>
+          </div>
+          <span class="admin-section-chip">Access</span>
+        </div>
+        <p class="section-note">Only global admins can manage user access. You can still manage events and locations from the dashboard.</p>
+        <a class="admin-hero-link compact-link" href="admin.html">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          Back to dashboard
+        </a>
+      </section>
+
+      <section class="admin-section user-admin-section" id="userAdminSection" hidden>
+        <div class="admin-section-header">
+          <div>
+            <span class="admin-eyebrow">Global admin</span>
+            <h2>User administration</h2>
+          </div>
+          <span class="admin-section-chip">Access</span>
+        </div>
+        <p class="section-note">Add Firebase Auth emails here to grant app access. Admins can manage events; global admins can also manage users.</p>
+
+        <div class="admin-user-grid">
+          <div class="form-full">
+            <div class="form-group">
+              <label for="adminUserEmail">User email</label>
+              <input class="mui-input" type="email" id="adminUserEmail" placeholder="admin@example.com" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="adminUserName">Display name</label>
+              <input class="mui-input" type="text" id="adminUserName" placeholder="Optional" autocomplete="off" />
+            </div>
+            <div class="admin-form-grid two">
+              <div class="form-group">
+                <label for="adminUserRole">User type</label>
+                <select class="mui-input" id="adminUserRole">
+                  <option value="admin">Admin</option>
+                  <option value="globalAdmin">Global admin</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="adminUserStatus">Access status</label>
+                <select class="mui-input" id="adminUserStatus">
+                  <option value="active">Active</option>
+                  <option value="disabled">Disabled</option>
+                </select>
+              </div>
+            </div>
+            <button class="mui-button mui-button-contained admin-submit" type="button" id="saveAdminUserButton">
+              <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+              Save user access
+            </button>
+          </div>
+
+          <div>
+            <div id="adminUsersList" class="admin-list">
+              <p class="admin-empty-state">No admin users loaded yet.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="successAlert" class="alert success" role="status" aria-live="polite"></div>
+  <div id="errorAlert" class="alert error" role="alert"></div>
+  <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/site-nav.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

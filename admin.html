@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data: https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com; frame-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com; child-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com;">
+  <title>Admin Panel - bibleconversations.co.uk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+</head>
+<body class="admin-page" data-admin-page="dashboard">
+  <header class="app-bar">
+    <div class="container">
+      <div class="header-content">
+        <a class="brand-link" href="admin.html" aria-label="Bible Conversations admin">
+          <img class="brand-logo" src="img/logo.webp" alt="Bible Conversations logo" />
+          <img class="teesside-logo header-teesside-logo" src="img/Teesside logo.svg" alt="Teesside" />
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <nav class="top-nav" id="primaryNav" aria-label="Primary navigation">
+          <a href="index.html">Events Map</a>
+          <a href="faq.html">FAQ</a>
+          <a href="admin-reports.html">Reports</a>
+          <a id="logoutNav" href="#" style="display: none;">Logout</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div id="loginSection">
+    <main class="container login-main">
+      <section class="login-card">
+        <div class="login-card-header">
+          <span class="admin-eyebrow">Admin access</span>
+          <h2>Sign in</h2>
+          <p>Use an authorised Firebase account to manage locations, events, and public map content.</p>
+        </div>
+        <div class="form-full">
+          <div class="form-group">
+            <label for="adminEmail">Email</label>
+            <input class="mui-input" type="email" id="adminEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input class="mui-input" type="password" id="adminPassword" placeholder="Firebase password" autocomplete="current-password" />
+          </div>
+          <div class="auth-action-grid">
+            <button class="mui-button mui-button-contained" type="button" id="adminEmailLoginButton">
+              <span class="material-symbols-outlined" aria-hidden="true">login</span>
+              Sign in
+            </button>
+            <button class="mui-button mui-button-outlined auth-google-button" type="button" id="adminGoogleLoginButton">
+              <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+              Google
+            </button>
+          </div>
+          <p class="auth-note" id="authHelpText">Your email must be listed by a global admin before you can access this area.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="adminContent" style="display: none;">
+    <main class="container admin-main">
+      <section class="admin-hero">
+        <div>
+          <span class="admin-eyebrow">Dashboard</span>
+          <h2>Manage events and locations</h2>
+          <p>Keep the public event map accurate by adding venues, maintaining dates, and checking active or expired events.</p>
+          <p class="admin-session-note" id="adminSessionSummary"></p>
+        </div>
+        <a class="admin-hero-link" href="index.html">
+          <span class="material-symbols-outlined" aria-hidden="true">open_in_new</span>
+          View public site
+        </a>
+      </section>
+
+      <nav class="admin-area-nav" aria-label="Admin area">
+        <a href="admin.html" data-admin-nav-link="dashboard">
+          <span class="material-symbols-outlined" aria-hidden="true">dashboard</span>
+          Dashboard
+        </a>
+        <a href="admin-reports.html" data-admin-nav-link="reports">
+          <span class="material-symbols-outlined" aria-hidden="true">monitoring</span>
+          Reports
+        </a>
+        <a href="admin-users.html" data-admin-nav-link="users" data-global-admin-only hidden>
+          <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+          User administration
+        </a>
+      </nav>
+
+      <section class="admin-stat-grid" aria-label="Admin summary">
+        <div class="admin-stat-card">
+          <span>Locations</span>
+          <strong id="totalLocations">0</strong>
+        </div>
+        <div class="admin-stat-card">
+          <span>Total events</span>
+          <strong id="totalEvents">0</strong>
+        </div>
+        <div class="admin-stat-card">
+          <span>Active</span>
+          <strong id="activeEvents">0</strong>
+        </div>
+        <div class="admin-stat-card">
+          <span>Inactive</span>
+          <strong id="inactiveEvents">0</strong>
+        </div>
+        <div class="admin-stat-card">
+          <span>Over</span>
+          <strong id="overEvents">0</strong>
+        </div>
+      </section>
+
+      <div class="admin-create-grid">
+        <section>
+          <div class="admin-section">
+            <div class="admin-section-header">
+              <div>
+                <span class="admin-eyebrow">Locations</span>
+                <h2>Add location</h2>
+              </div>
+              <span class="admin-section-chip">Venue</span>
+            </div>
+
+            <div class="form-full">
+              <div class="form-group">
+                <label for="locName">Location Name</label>
+                <input class="mui-input" type="text" id="locName" placeholder="e.g., St. John's Church" />
+              </div>
+              <div class="form-group">
+                <label for="locAddress">Address</label>
+                <input class="mui-input" type="text" id="locAddress" placeholder="Full address" />
+              </div>
+              <div class="admin-form-grid two">
+                <div class="form-group">
+                  <label for="locPostcode">Postcode</label>
+                  <input class="mui-input" type="text" id="locPostcode" placeholder="e.g., SW1A 1AA" />
+                </div>
+                <div class="form-group">
+                  <label for="locContact">Contact Number</label>
+                  <input class="mui-input" type="text" id="locContact" placeholder="01642 123456" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Set Location on Map</label>
+                <p class="field-help">Drag the marker or click the map to set the exact venue position.</p>
+                <div id="locationPickerMap" class="admin-map"></div>
+              </div>
+
+              <div class="admin-form-grid two">
+                <div class="form-group">
+                  <label for="locLat">Latitude</label>
+                  <input class="mui-input" type="number" id="locLat" step="0.0001" placeholder="51.5074" />
+                </div>
+                <div class="form-group">
+                  <label for="locLon">Longitude</label>
+                  <input class="mui-input" type="number" id="locLon" step="0.0001" placeholder="-0.1278" />
+                </div>
+              </div>
+
+              <button class="mui-button mui-button-contained admin-submit" type="button" id="addLocationButton">
+                <span class="material-symbols-outlined" aria-hidden="true">add_location</span>
+                Add Location
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="admin-section">
+            <div class="admin-section-header">
+              <div>
+                <span class="admin-eyebrow">Events</span>
+                <h2>Add event</h2>
+              </div>
+              <span class="admin-section-chip">Programme</span>
+            </div>
+
+            <div class="form-full">
+              <div class="form-group">
+                <label for="evtLocation">Church Location</label>
+                <select class="mui-input" id="evtLocation">
+                  <option value="">Select location</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="evtTitle">Event Title</label>
+                <input class="mui-input" type="text" id="evtTitle" placeholder="e.g., Youth Group" />
+              </div>
+              <div class="form-group">
+                <label for="evtDescription">Description</label>
+                <textarea class="mui-input" id="evtDescription" placeholder="Event details"></textarea>
+              </div>
+
+              <div class="admin-form-grid two">
+                <div class="form-group">
+                  <label for="evtStatus">Event Status</label>
+                  <select class="mui-input" id="evtStatus">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="admin-form-grid two">
+                <div class="form-group">
+                  <label for="evtStartDate">Start Date</label>
+                  <input class="mui-input" type="date" id="evtStartDate" />
+                </div>
+                <div class="form-group">
+                  <label for="evtEndDate">End Date</label>
+                  <input class="mui-input" type="date" id="evtEndDate" />
+                </div>
+              </div>
+
+              <div class="admin-form-grid two">
+                <div class="form-group">
+                  <label for="evtDay">Day of Week</label>
+                  <select class="mui-input" id="evtDay">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="evtTime">Time</label>
+                  <input class="mui-input" type="time" id="evtTime" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="evtEventbriteUrl">Eventbrite URL</label>
+                <input class="mui-input" type="url" id="evtEventbriteUrl" placeholder="https://www.eventbrite.com/..." />
+              </div>
+
+              <button class="mui-button mui-button-contained admin-submit" type="button" id="addEventButton">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                Add Event
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="admin-management-grid">
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <div>
+              <span class="admin-eyebrow">Manage</span>
+              <h2>Locations</h2>
+            </div>
+          </div>
+          <p class="section-note">Select a location to view and manage its events.</p>
+          <div id="locationsList" class="admin-list"></div>
+        </div>
+
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <div>
+              <span class="admin-eyebrow">Selected location</span>
+              <h2 id="selectedLocationTitle">Location Events</h2>
+            </div>
+          </div>
+          <div id="selectedLocationMeta" class="location-detail-meta"></div>
+          <div id="locationEventsList" class="admin-list">
+            <p class="admin-empty-state">Select a location to see its events.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="successAlert" class="alert success" role="status" aria-live="polite"></div>
+  <div id="errorAlert" class="alert error" role="alert"></div>
+  <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
+
+  <div id="editLocationModal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2>Edit Location</h2>
+        <button class="close-btn" type="button" id="editLocationCloseButton">&times;</button>
+      </div>
+      <div class="form-full">
+        <div class="form-group">
+          <label for="editLocName">Location Name</label>
+          <input class="mui-input" type="text" id="editLocName" />
+        </div>
+        <div class="form-group">
+          <label for="editLocAddress">Address</label>
+          <input class="mui-input" type="text" id="editLocAddress" />
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="editLocPostcode">Postcode</label>
+            <input class="mui-input" type="text" id="editLocPostcode" />
+          </div>
+          <div class="form-group">
+            <label for="editLocContact">Contact Number</label>
+            <input class="mui-input" type="text" id="editLocContact" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Set Location on Map</label>
+          <p class="field-help">Drag the marker or click the map to update this venue.</p>
+          <div id="editLocationPickerMap" class="admin-map"></div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="editLocLat">Latitude</label>
+            <input class="mui-input" type="number" id="editLocLat" step="0.0001" />
+          </div>
+          <div class="form-group">
+            <label for="editLocLon">Longitude</label>
+            <input class="mui-input" type="number" id="editLocLon" step="0.0001" />
+          </div>
+        </div>
+        <button class="mui-button mui-button-contained admin-submit" type="button" id="saveLocationEditButton">
+          <span class="material-symbols-outlined" aria-hidden="true">save</span>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editEventModal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2>Edit Event</h2>
+        <button class="close-btn" type="button" id="editEventCloseButton">&times;</button>
+      </div>
+      <div class="form-full">
+        <div class="form-group">
+          <label for="editEvtTitle">Event Title</label>
+          <input class="mui-input" type="text" id="editEvtTitle" />
+        </div>
+        <div class="form-group">
+          <label for="editEvtDescription">Description</label>
+          <textarea class="mui-input" id="editEvtDescription"></textarea>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="editEvtStatus">Event Status</label>
+            <select class="mui-input" id="editEvtStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="over">Over</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="editEvtStartDate">Start Date</label>
+            <input class="mui-input" type="date" id="editEvtStartDate" />
+          </div>
+          <div class="form-group">
+            <label for="editEvtEndDate">End Date</label>
+            <input class="mui-input" type="date" id="editEvtEndDate" />
+          </div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="editEvtDay">Day of Week</label>
+            <select class="mui-input" id="editEvtDay">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editEvtTime">Time</label>
+            <input class="mui-input" type="time" id="editEvtTime" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editEvtEventbriteUrl">Eventbrite URL</label>
+          <input class="mui-input" type="url" id="editEvtEventbriteUrl" />
+        </div>
+        <button class="mui-button mui-button-contained admin-submit" type="button" id="saveEventEditButton">
+          <span class="material-symbols-outlined" aria-hidden="true">save</span>
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/site-nav.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>

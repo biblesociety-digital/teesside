@@ -1,0 +1,85 @@
+bibleconversations.co.uk
+User Stories and Acceptance Criteria
+
+User Story 1: Find nearby church events
+As a public visitor,
+I want to enter my postcode and search within a chosen radius,
+so that I can find suitable church events near me.
+
+Acceptance Criteria:
+- Given I am on the home page, when I enter a valid Teesside postcode and click Search, then the map centres on that postcode.
+- Given I have searched by postcode, when the results are shown, then a bordered radius circle is displayed on the map to show the search area.
+- Given I have selected a radius, when the search is run, then only locations inside that radius are included in the map results.
+- Given matching events exist, when the results are displayed, then I see up to 10 active upcoming events ordered by the nearest start date first.
+- Given an event is inactive or over, when public results are displayed, then that event is not shown.
+- Given I click Clear, when the search resets, then the postcode marker, radius circle, filters, and event results reset.
+
+User Story 2: Filter events by age group
+As a public visitor,
+I want to filter events by age group,
+so that I can quickly find events that are relevant for adults or young people.
+
+Acceptance Criteria:
+- Given I select All Events, when results are displayed, then active upcoming events for all age groups are shown.
+- Given I select For Adults (18+), when results are displayed, then only active upcoming 18+ events are shown.
+- Given I select For Young People (<18), when results are displayed, then only active upcoming under 18 events are shown.
+- Given a postcode search is active, when I change the age filter, then the visible event list and clustered map markers update to match the filter.
+
+User Story 3: View event locations on a clustered map
+As a public visitor,
+I want event locations to be clustered on the map,
+so that the map remains readable when there are many churches.
+
+Acceptance Criteria:
+- Given multiple locations are close together, when I view the map at a wider zoom level, then nearby markers are grouped into clusters.
+- Given I zoom in, when markers are far enough apart, then the cluster splits into individual church markers.
+- Given I click a church marker, when the popup opens, then I can see the church name, denomination, and active event count.
+- Given I click View Events on a marker, then the event list focuses on that location's active upcoming events.
+- Given the focused event list is displayed, when I click an event card, then a clean event detail page opens for that event.
+- Given I am on an event detail page, then I can see the event title, description, date, time, age group, status, location, address, postcode, denomination, contact details, and booking link if one exists.
+
+User Story 4: View full event details
+As a public visitor,
+I want to click an event card and view the full event information,
+so that I can decide whether the event is right for me before booking or attending.
+
+Acceptance Criteria:
+- Given active events are listed on the home page, when I click an event card, then I am taken to a dedicated event details page.
+- Given the event has a valid Eventbrite URL, when I view the details page, then I can open that booking link in a new tab.
+- Given the event or location cannot be found, when the details page loads, then I see a clear message and a way back to the event list.
+- Given I am viewing details on a mobile device, then the content remains readable and actions remain easy to tap.
+
+User Story 5: Manage locations in the admin panel
+As an admin user,
+I want to add, edit, and delete church locations,
+so that the public map uses accurate venue information.
+
+Acceptance Criteria:
+- Given I am authenticated in the admin panel, when I add a location with required details and valid coordinates, then the location is saved to Firebase.
+- Given I edit a location, when the edit modal opens, then I can update the name, address, postcode, map position, latitude, longitude, denomination, and contact number.
+- Given I move the marker in the edit map, when I save the location, then the updated coordinates are saved to Firebase.
+- Given I delete a location, when I confirm deletion, then the location and its events are removed from Firebase.
+- Given I select a location in the admin list, then I can see only the events for that location.
+
+User Story 6: Manage event status and expiry
+As an admin user,
+I want events to have active, inactive, and over statuses,
+so that expired or hidden events do not appear publicly while remaining manageable in admin.
+
+Acceptance Criteria:
+- Given I create or edit an event, when I choose Active, then the event can appear publicly if its end date has not passed.
+- Given I create or edit an event, when I choose Inactive, then the event remains in admin but is hidden from the public page.
+- Given an event end date has passed, when the app loads event data, then the event is marked Over and active is set to false.
+- Given an event is Over, when public results are displayed, then the event is hidden.
+- Given I view a location in admin, when its events are listed, then each event shows its current status.
+
+User Story 7: Store data in Firebase
+As the project owner,
+I want locations and events to be stored in Google Firebase Firestore,
+so that event data is shared across devices and not tied to one browser.
+
+Acceptance Criteria:
+- Given Firebase is available, when the home page loads, then location and event data are read from Firestore.
+- Given Firebase is available, when an admin adds or edits a location or event, then the changes are written to Firestore.
+- Given Firebase has no locations, when the home page or admin panel loads, then the user sees an appropriate empty-state message.
+- Given Firebase is unavailable or permissions fail, when data cannot load or save, then the user sees an error message.

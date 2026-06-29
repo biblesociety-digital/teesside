@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' https://www.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com;">
+  <title>Attendance Report - bibleconversations.co.uk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="site-page attendance-page">
+  <header class="app-bar">
+    <div class="container">
+      <div class="header-content">
+        <a class="brand-link" href="index.html" aria-label="Bible Conversations home">
+          <img class="brand-logo" src="img/logo.webp" alt="Bible Conversations logo" />
+          <img class="teesside-logo header-teesside-logo" src="img/Teesside logo.svg" alt="Teesside" />
+        </a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
+          <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+        </button>
+        <nav class="top-nav" id="primaryNav" aria-label="Primary navigation">
+          <a href="index.html">Events Map</a>
+          <a href="faq.html">FAQ</a>
+          <a href="admin.html">Admin Panel</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container attendance-main">
+    <section class="attendance-card" aria-labelledby="attendanceTitle">
+      <div class="attendance-card-header">
+        <span class="admin-eyebrow">Session attendance</span>
+        <h1 id="attendanceTitle">Record Bible Conversation attendance</h1>
+        <p>Find the location and event, then add the number of people who attended that session.</p>
+      </div>
+
+      <div class="form-full">
+        <div class="form-group">
+          <label for="attendanceLocation">Location</label>
+          <select class="mui-input" id="attendanceLocation">
+            <option value="">Loading locations...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="attendanceEvent">Event</label>
+          <select class="mui-input" id="attendanceEvent" disabled>
+            <option value="">Select a location first</option>
+          </select>
+        </div>
+
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="attendanceSession">Session</label>
+            <select class="mui-input" id="attendanceSession">
+              <option value="">Select session</option>
+              <option value="1">Session 1</option>
+              <option value="2">Session 2</option>
+              <option value="3">Session 3</option>
+              <option value="4">Session 4</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="attendanceDate">Session date</label>
+            <input class="mui-input" type="date" id="attendanceDate">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="attendanceCount">Number of people who attended</label>
+          <input class="mui-input" type="number" id="attendanceCount" min="0" max="10000" step="1" inputmode="numeric" placeholder="0">
+        </div>
+
+        <div class="form-group">
+          <label for="attendanceNotes">Notes</label>
+          <textarea class="mui-input" id="attendanceNotes" maxlength="500" placeholder="Optional"></textarea>
+        </div>
+
+        <button class="mui-button mui-button-contained admin-submit" type="button" id="saveAttendanceButton">
+          <span class="material-symbols-outlined" aria-hidden="true">how_to_reg</span>
+          Save attendance
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div id="successAlert" class="alert success" role="status" aria-live="polite"></div>
+  <div id="errorAlert" class="alert error" role="alert"></div>
+  <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/site-nav.js"></script>
+  <script src="js/attendance.js"></script>
+</body>
+</html>
