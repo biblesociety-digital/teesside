@@ -7083,14 +7083,14 @@ line-height: 24px; /* 150% */
     gap: 20px;
   }
   .landing-page .landing-faq .faq-item h3 {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 18px;
+    line-height: 24px;
     margin-bottom: 6px;
   }
   .landing-page .landing-faq .faq-item p,
   .landing-page .landing-faq .faq-item li {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 18px;
+    line-height: 24px;
   }
   .landing-page .landing-faq .faq-more-link {
     display: flex;
