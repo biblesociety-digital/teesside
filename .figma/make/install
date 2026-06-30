@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$HOME/.fnm/fnm" ] && eval "$(~/.fnm/fnm env)"
+command -v fnm &>/dev/null && eval "$(fnm env)"
+[ -s "$HOME/.volta/bin/node" ] && export PATH="$HOME/.volta/bin:$PATH"
+
+npm install

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+# Source Node version managers that may not be on the default PATH
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$HOME/.fnm/fnm" ] && eval "$(~/.fnm/fnm env)"
+command -v fnm &>/dev/null && eval "$(fnm env)"
+[ -s "$HOME/.volta/bin/node" ] && export PATH="$HOME/.volta/bin:$PATH"
+
+if ! command -v node &> /dev/null; then
+  echo "Error: Node.js is required but not installed."
+  echo "Install it via: https://nodejs.org or use nvm/fnm/volta"
+  exit 1
+fi
+
+echo "Node.js $(node --version) found"

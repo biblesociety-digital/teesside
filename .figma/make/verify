@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+MAX_ATTEMPTS=30
+ATTEMPT=0
+
+until curl -sf "http://localhost:${PORT:-3000}" > /dev/null 2>&1; do
+  ATTEMPT=$((ATTEMPT + 1))
+  if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
+    echo "Error: Server did not start within ${MAX_ATTEMPTS} seconds"
+    exit 1
+  fi
+  sleep 1
+done
+
+echo "Server is running on http://localhost:${PORT:-3000}"
