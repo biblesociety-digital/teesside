@@ -1,17 +1,22 @@
 #!/bin/bash
 set -e
 
-# Source Node version managers that may not be on the default PATH
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-[ -s "$HOME/.fnm/fnm" ] && eval "$(~/.fnm/fnm env)"
-command -v fnm &>/dev/null && eval "$(fnm env)"
-[ -s "$HOME/.volta/bin/node" ] && export PATH="$HOME/.volta/bin:$PATH"
-
-if ! command -v node &> /dev/null; then
-  echo "Error: Node.js is required but not installed."
-  echo "Install it via: https://nodejs.org or use nvm/fnm/volta"
+if ! command -v python3 &> /dev/null; then
+  echo "Error: Python 3 is required but not found."
   exit 1
 fi
 
-echo "Node.js $(node --version) found"
+echo "Python $(python3 --version) found"
+
+# Node.js is optional (enables live SCSS compilation)
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$HOME/.fnm/fnm" ] && eval "$(~/.fnm/fnm env)" 2>/dev/null
+command -v fnm &>/dev/null && eval "$(fnm env)" 2>/dev/null
+[ -s "$HOME/.volta/bin/node" ] && export PATH="$HOME/.volta/bin:$PATH"
+
+if command -v node &> /dev/null; then
+  echo "Node.js $(node --version) found (SCSS watch enabled)"
+else
+  echo "Node.js not found — SCSS watch disabled, using pre-built CSS"
+fi
