@@ -6414,8 +6414,8 @@ line-height: 24px; /* 150% */
 }
 .landing-page .landing-faq > p {
   color: #111111;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 18px;
+  line-height: 24px;
   margin: 0 0 28px;
 }
 .landing-page .landing-faq .faq-copy {
@@ -6425,17 +6425,26 @@ line-height: 24px; /* 150% */
 }
 .landing-page .landing-faq .faq-item h3 {
   color: #111111;
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 20px;
+  line-height: 24px;
   margin: 0 0 6px;
+}
+.landing-page .landing-faq .faq-item:last-child h3 {
+  font-size: 14px;
+  line-height: 20px;
 }
 .landing-page .landing-faq .faq-item p,
 .landing-page .landing-faq .faq-item li {
   color: #111111;
+  font-size: 18px;
+  line-height: 24px;
+  margin: 0 0 12px;
+}
+.landing-page .landing-faq .faq-item:last-child p,
+.landing-page .landing-faq .faq-item:last-child li {
   font-size: 13px;
   line-height: 19px;
-  margin: 0 0 12px;
 }
 .landing-page .landing-faq .faq-item p:last-child {
   margin-bottom: 0;
