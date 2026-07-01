@@ -54,6 +54,7 @@ async function initializeApp() {
   
   // Display upcoming events matching the default filters
   renderLocations(currentLocationSet);
+  await hydrateSearchFromUrl();
 
   refreshMobileLandingMap();
 }
@@ -636,10 +637,13 @@ async function searchByPostcode() {
     return;
   }
 
-  const postcode = document.getElementById('postcodeInput').value.trim();
+  const postcode = document.getElementById('postcodeInput')?.value.trim() || '';
   const radiusInput = document.getElementById('radiusInput');
-  searchRadius = clampSearchRadius(radiusInput.value);
-  radiusInput.value = searchRadius;
+  searchRadius = clampSearchRadius(radiusInput?.value);
+
+  if (radiusInput) {
+    radiusInput.value = searchRadius;
+  }
   
   if (!postcode) {
     showError('Please enter a postcode');
@@ -686,6 +690,44 @@ async function searchByPostcode() {
   }
 
   scrollResultsToTop();
+}
+
+async function hydrateSearchFromUrl() {
+  if (!document.body.classList.contains('landing-page')) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const postcode = params.get('postcode')?.trim();
+
+  if (!postcode) {
+    return;
+  }
+
+  const postcodeInput = document.getElementById('postcodeInput');
+  const radiusInput = document.getElementById('radiusInput');
+  const filterPostcodeInput = document.getElementById('filterPostcodeInput');
+  const filterRadiusInput = document.getElementById('filterRadiusInput');
+  const radius = clampSearchRadius(params.get('radius'));
+
+  if (postcodeInput) {
+    postcodeInput.value = postcode;
+  }
+
+  if (filterPostcodeInput) {
+    filterPostcodeInput.value = postcode;
+  }
+
+  if (radiusInput) {
+    radiusInput.value = radius;
+  }
+
+  if (filterRadiusInput) {
+    filterRadiusInput.value = radius;
+  }
+
+  searchRadius = radius;
+  await searchByPostcode();
 }
 
 function setLandingSearchState(state) {
