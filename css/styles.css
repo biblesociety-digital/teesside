@@ -6702,6 +6702,25 @@ line-height: 24px; /* 150% */
   text-decoration: none;
   width: auto;
 }
+.site-page .site-footer {
+  background: #F0F0F0;
+  padding: 24px;
+}
+.site-page .site-footer p {
+  color: #575757;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0;
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .site-page .site-footer {
+    padding: 16px;
+  }
+}
 
 @media (max-width: 820px) {
   .landing-page {
