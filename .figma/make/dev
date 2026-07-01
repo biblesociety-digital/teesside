@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$HOME/.fnm/fnm" ] && eval "$(~/.fnm/fnm env)" 2>/dev/null
+command -v fnm &>/dev/null && eval "$(fnm env)" 2>/dev/null
+[ -s "$HOME/.volta/bin/node" ] && export PATH="$HOME/.volta/bin:$PATH"
+
+# Start SCSS watcher if Node.js is available
+if command -v npx &> /dev/null; then
+  npm run build:css
+  npm run watch:css &
+fi
+
+# Serve the static site with Python
+python3 -m http.server ${PORT:-3000}

@@ -54,10 +54,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Roboto:wght@400;500;700;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/MarkerCluster.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/MarkerCluster.Default.min.css">
-  <meta name="recaptcha-site-key" content="REPLACE_WITH_RECAPTCHA_SITE_KEY">
 
   <!-- Google Tag Manager -->
   <script>
@@ -97,19 +93,22 @@
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="Bible Conversations home">
         <img src="img/logo.webp" alt="Bible Society">
-        <img class="teesside-logo header-teesside-logo" src="img/Teesside logo.svg" alt="Teesside">
       </a>
-      <a class="question-link" href="#questions">Got questions?</a>
+      <a class="question-link" href="faq.html">Got questions?</a>
       <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primaryNav">
         <span class="material-symbols-outlined" aria-hidden="true">menu</span>
       </button>
       <nav class="top-nav" id="primaryNav" aria-label="Primary navigation">
         <a href="index.html">Home</a>
         <a href="landing.html" aria-current="page">Find a conversation</a>
-        <a href="#questions">Got questions</a>
+        <a href="faq.html">Got questions</a>
       </nav>
     </div>
   </header>
+
+  <section class="notice-bar" aria-label="Free events notice">
+    <p>Free events all over Teesside</p>
+  </section>
 
   <main class="experience-main">
     <section class="hero landing-hero" aria-labelledby="homeHeroTitle">
@@ -119,9 +118,35 @@
           <span class="hero-subtitle">Bible Conversations</span>
           <img class="teesside-logo hero-teesside-logo" src="img/Teesside logo.svg" alt="Teesside">
         </div>
-        <p class="hero-text">No pressure.<br>No prior knowledge needed.</p>
-        <p class="hero-text">Just honest conversations about what the Bible says about life, people and the questions you’ve been quietly asking.</p>
-        <a class="primary-cta" href="#findConversation">Find a conversation near you</a>
+        <p class="hero-text" style="margin-block: unset; margin-top: 52px;">Meet, build community, discover the Bible. </p>
+        <form class="hero-search-form" id="landingSearchForm" action="search-results.html" method="get">
+          <div class="search-grid">
+            <div class="form-group">
+              <label for="postcodeInput">Postcode</label>
+              <input class="mui-input" type="text" id="postcodeInput" name="postcode" placeholder="e.g. NE99 1AR" autocomplete="postal-code" required>
+            </div>
+            <div class="form-group">
+              <label for="radiusInput">Search radius (miles)</label>
+              <select class="mui-input" id="radiusInput" name="radius">
+                <option value="0.25" selected>Just this area</option>
+                <option value="0.5">0.5 miles</option>
+                <option value="1">1 mile</option>
+                <option value="3">3 miles</option>
+                <option value="5">5 miles</option>
+                <option value="10">10 miles</option>
+                <option value="25">25 miles</option>
+                <option value="50">50 miles</option>
+                <option value="100">100 miles</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="primary-cta hero-search-submit" id="postcodeSearchButton" type="submit">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            Find a conversation near you
+          </button>
+          <p class="hero-search-helper">These conversations are run by local churches across Teesside.</p>
+        </form>
       </div>
       <div class="hero-photo landing-hero-photo" aria-hidden="true"></div>
     </section>
@@ -147,23 +172,15 @@
     </section>
 
     <section class="feature-row conversation-row">
-      <img class="photo-card" src="img/conversation.png" alt="People talking around a table">
+      <img class="photo-card" src="img/content-image-landing-2.png" alt="People talking around a table">
       <article class="info-card conversation-card">
-        <div class="section-title-lockup conversation-heading">
-          <span class="section-title-icon material-symbols-outlined" aria-hidden="true">help</span>
-          <div>
-            <span class="section-title-kicker conversation-kicker">What happens</span>
-            <h2>What happens at a Bible Conversation?</h2>
-            <p class="section-title-meta">4 sessions &bull; zero cost</p>
-          </div>
-        </div>
-
-        <p>This is your chance to pull up a pew, figure out how you feel about the Bible and build community – in a way that’s social, relaxed and rooted in real life.  </p>
-        <p>No Bible Conversation is the same. But they all follow the same simple structure. </p>
+        <h2>Why you should join:</h2>
+        <p>Have you ever wondered what the Bible has to say? And where to get started with it?</p>
+        <p>Join a Bible Conversation to:</p>
         <ul class="conversation-detail-list">
-          <li><span class="conversation-step-icon material-symbols-outlined">menu_book</span><span>We open the Bible and read it together </span></li>
-          <li><span class="conversation-step-icon material-symbols-outlined" >check_circle</span><span>NWe ask questions about it</span></li>
-          <li><span class="conversation-step-icon material-symbols-outlined">question_answer</span><span>We explore what it says about God and people</span></li>
+          <li><span class="conversation-step-icon material-symbols-outlined" aria-hidden="true">check_box</span><span>Build community with other people keen to explore the Bible</span></li>
+          <li><span class="conversation-step-icon material-symbols-outlined" aria-hidden="true">check_box</span><span>Learn a simple method to dig into the Bible for yourself</span></li>
+          <li><span class="conversation-step-icon material-symbols-outlined" aria-hidden="true">check_box</span><span>Gain a deeper understanding of four Bible stories</span></li>
         </ul>
       </article>
     </section>
@@ -197,6 +214,41 @@
       </div>
     </section>
 
+    <section class="session-overview-section" aria-labelledby="sessionOverviewTitle">
+      <div class="session-overview-copy">
+        <h2 id="sessionOverviewTitle">What happens at a Bible Conversation?</h2>
+        <div class="session-tags" aria-label="Session details">
+          <span>4 sessions</span>
+          <span>No cost</span>
+        </div>
+        <p>This is your chance to figure out how you feel about the Bible - in a way that's social, relaxed and rooted in real life.</p>
+        <p>But what exactly is a Bible Conversation? And how does it work?</p>
+        <p>No two Bible Conversations are the same. But they all follow the same simple structure:</p>
+
+        <ol class="session-step-list">
+          <li><span>1</span><p>You meet up as a small group hosted by a local church</p></li>
+          <li><span>2</span><p>You listen to one short Bible story per session</p></li>
+          <li><span>3</span><p>You chat about what it says about God and people - there are no right or wrong answers here</p></li>
+        </ol>
+      </div>
+      <img class="session-overview-image" src="img/content-image-landing-3.png" alt="People talking together at a Bible Conversation">
+    </section>
+
+    <section class="session-detail-section" aria-labelledby="sessionDetailTitle">
+      <img class="session-detail-image" src="img/content-image-landing-4.png" alt="A small group talking over coffee">
+      <div class="session-detail-panel">
+        <h2 id="sessionDetailTitle">What does each section look like?</h2>
+        <p>At each session, you'll listen to a short story from either Luke or Acts - two books that talk about Jesus.</p>
+        <p>Then, you chat about it as a group, with your host asking questions like:</p>
+        <ul>
+          <li>What do you think the story is about?</li>
+          <li>What do you like or dislike about it?</li>
+          <li>Does it challenge or encourage you in any way?</li>
+        </ul>
+        <p>There's no formal teaching or preaching. This is your chance to have your say.</p>
+      </div>
+    </section>
+
     <section class="feature-row who-row">
       <div class="badge-panel">
         <img src="img/logo.webp" alt="Bible Society logo">
@@ -216,207 +268,43 @@
       </article>
     </section>
 
-    <section class="search-section finder-card" id="findConversation" aria-labelledby="finderTitle">
-      <div class="finder-heading section-title-lockup">
-        <span class="section-title-icon material-symbols-outlined" aria-hidden="true">search</span>
-        <div>
-          <span class="section-title-kicker">Map</span>
-        <h2 id="finderTitle">Find your nearest Bible Conversation</h2>
-        <p>Choose a time and place that works for you - after work, during the week, or at the weekend.</p>
-        </div>
-      </div>
-
-      <div class="search-grid">
-        <div class="form-group">
-          <label for="postcodeInput">Postcode</label>
-          <input class="mui-input" type="text" id="postcodeInput" placeholder="e.g. NE99 1AR" autocomplete="postal-code">
-        </div>
-        <div class="form-group">
-          <label for="radiusInput">Search radius (miles)</label>
-          <select class="mui-input" id="radiusInput">
-            <option value="0.25" selected>Just this area</option>
-            <option value="0.5">0.5 miles</option>
-            <option value="1">1 mile</option>
-            <option value="3">3 miles</option>
-            <option value="5">5 miles</option>
-            <option value="10">10 miles</option>
-            <option value="25">25 miles</option>
-            <option value="50">50 miles</option>
-            <option value="100">100 miles</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="button-group search-actions">
-        <label class="age-confirmation" for="ageConfirmation">
-          <input type="checkbox" id="ageConfirmation">
-          <span>I am 18 or over</span>
-        </label>
-        <button class="mui-button mui-button-contained" id="postcodeSearchButton" type="button" disabled>
-          <span class="material-symbols-outlined" aria-hidden="true">search</span>
-          Find a conversation near you
-        </button>
-        <p class="finder-footnote">These conversations are run by local churches across Teesside.</p>
-      </div>
-
-      <div id="successAlert" class="alert success" role="status" aria-live="polite"></div>
-      <div id="errorAlert" class="alert error" role="alert"></div>
-      <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
-    </section>
-
-    <section class="results-section" aria-labelledby="resultsToolbarTitle">
-      <div class="results-toolbar">
-        <div class="view-toggle" role="group" aria-label="Choose results view">
-          <button class="view-toggle-button active" type="button" data-results-view-button="list" aria-pressed="true">
-            <span class="material-symbols-outlined" aria-hidden="true">check</span>
-            List view
-          </button>
-          <button class="view-toggle-button" type="button" data-results-view-button="map" aria-pressed="false">
-            <span class="material-symbols-outlined" aria-hidden="true">map</span>
-            Map view
-          </button>
-        </div>
-
-        <div class="results-toolbar-body">
-          <div class="results-toolbar-heading">
-            <span class="section-kicker" id="resultsViewLabel">List</span>
-            <h2 id="resultsToolbarTitle">Your search results</h2>
-            <p><strong id="eventCountSummary">0</strong> <span id="eventCountSummaryLabel">events found</span></p>
-          </div>
-
-          <div class="results-toolbar-actions">
-            <button class="result-action-button" type="button" id="changeSearchButton">
-              <span class="material-symbols-outlined" aria-hidden="true">sync</span>
-              Change my search
-            </button>
-            <button class="result-action-button" type="button" id="filterPanelToggle" aria-expanded="false" aria-controls="filterPanel">
-              <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
-              Filter
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="filter-panel-backdrop" id="filterPanelBackdrop" hidden></div>
-      <aside class="filter-panel" id="filterPanel" role="dialog" aria-modal="true" aria-labelledby="filterPanelTitle" aria-hidden="true">
-        <div class="filter-panel-header">
-          <h2 id="filterPanelTitle">Filter your results</h2>
-          <button class="icon-button filter-panel-close" type="button" id="filterPanelClose" aria-label="Close filters">
-            <span class="material-symbols-outlined" aria-hidden="true">close</span>
-          </button>
-        </div>
-
-        <div class="filters conversation-filters" aria-label="Find conversation filters">
-          <div class="filter-field">
-            <label for="filterPostcodeInput">Postcode</label>
-            <input class="mui-input" type="text" id="filterPostcodeInput" placeholder="NE99 1AR" autocomplete="postal-code">
-          </div>
-
-          <div class="filter-field">
-            <label for="filterRadiusInput">Search radius (miles)</label>
-            <select class="mui-input" id="filterRadiusInput">
-              <option value="0.25" selected>Just this area</option>
-              <option value="0.5">0.5 miles</option>
-              <option value="1">1 mile</option>
-              <option value="3">3 miles</option>
-              <option value="5">5 miles</option>
-              <option value="10">10 miles</option>
-              <option value="25">25 miles</option>
-              <option value="50">50 miles</option>
-              <option value="100">100 miles</option>
-            </select>
-          </div>
-
-          <fieldset class="filter-pill-group">
-            <legend>Start date</legend>
-            <div class="filter-pills">
-              <button class="filter-pill active" type="button" data-filter-target="dayOfWeek" data-filter-value="all">Any day</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="monday">Monday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="tuesday">Tuesday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="wednesday">Wednesday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="thursday">Thursday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="friday">Friday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="saturday">Saturday</button>
-              <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="sunday">Sunday</button>
-            </div>
-          </fieldset>
-
-          <fieldset class="filter-pill-group">
-            <legend>Time of day</legend>
-            <div class="filter-pills">
-              <button class="filter-pill active" type="button" data-filter-target="timeOfDay" data-filter-value="all">Anytime</button>
-              <button class="filter-pill" type="button" data-filter-target="timeOfDay" data-filter-value="morning">Morning (9am - 12pm)</button>
-              <button class="filter-pill" type="button" data-filter-target="timeOfDay" data-filter-value="lunch">Lunch time (12pm - 2pm)</button>
-              <button class="filter-pill" type="button" data-filter-target="timeOfDay" data-filter-value="evening">Evening (6pm - 9pm)</button>
-              <button class="filter-pill" type="button" data-filter-target="timeOfDay" data-filter-value="lateNight">Late night (9pm - 12am)</button>
-            </div>
-          </fieldset>
-
-          <div class="filter-actions">
-            <button class="filter-clear" type="button" id="clearEventFilters">Clear filter</button>
-            <button class="filter-apply" type="button" id="filterPanelApply">Update search</button>
-          </div>
-        </div>
-      </aside>
-
-      <div class="map-section results-view-panel" data-results-view-panel="map">
-        <div id="mapContainer"></div>
-      </div>
-
-      <div class="events-section results-view-panel" data-results-view-panel="list">
-        <span id="eventCount" hidden>0</span>
-        <div id="eventsList" class="events-list">
-          <p class="empty-state">Search for a location or select filters to see events.</p>
-        </div>
-        <div id="eventsPagination" class="pagination"></div>
-      </div>
-    </section>
-
     <section class="faq landing-faq" id="questions">
-      <div class="section-title-lockup">
-        <span class="section-title-icon material-symbols-outlined" aria-hidden="true">help</span>
-        <div>
-          <span class="section-title-kicker">FAQ</span>
-          <h2>Still have questions?</h2>
-        </div>
-      </div>
-      <p>Find out more about what to expect, how it works, and whether it's for you.</p>
+      <h2 class="faq-heading">Want to find out more?</h2>
 
       <div class="faq-copy">
         <article class="faq-item">
-          <h3>Do I need to book or can I just turn up? </h3>
-          <p>You’re very welcome to turn up, but we’d recommend booking via the Eventbrite page set up by your local Bible Conversation host so they can make sure there’s space for everyone. </p>
+          <h3>Do I need to book or can I just turn up?</h3>
+          <p>You’re very welcome to turn up, but we’d recommend booking via the Eventbrite page set up by your local Bible Conversation host so they can make sure there’s space for everyone.</p>
+          <p>Plus, you’ll be able to ask your host any questions you have.</p>
         </article>
 
         <article class="faq-item">
           <h3>Is it free to join?</h3>
-          <p>Yes, Bible Conversations are completely free</p>
+          <p>Yes, Bible Conversations are completely free.</p>
         </article>
 
         <article class="faq-item">
-          <h3>How do I sign up? </h3>
-          <p>Registration is quick and easy. Find a Bible Conversation that suits you via our map and sign up for the event via the relevant Eventbrite page. You’ll then be sent everything you need to know ahead of the four sessions, including the location and time.  </p>
+          <h3>How do I sign up?</h3>
+          <p>Registration is quick and easy. Find a Bible Conversation that suits you via our map and sign up for the event via the relevant Eventbrite page. You’ll then be sent everything you need to know ahead of the four sessions, including the location and time.</p>
         </article>
 
         <article class="faq-item">
-          <h3>Can I bring a friend who hasn’t booked? </h3>
-          <p>Absolutely, you’re very welcome to bring a friend along. However, we’re recommending everyone sign up, so hosts know how many to expect. </p>
-          <p>Why not <a href="https://www.bibleconversations.co.uk/" target="_blank">share this link</a> and invite them to sign up, so they know what to expect?</p>
+          <h3>Can I bring a friend who hasn’t booked?</h3>
+          <p>Absolutely, you’re very welcome to bring a friend along. However, we’re recommending everyone sign up, so hosts know how many to expect.</p>
+          <p>Why not <a href="https://www.bibleconversations.co.uk/" target="_blank">share this link</a> with them and invite them to sign up too?</p>
         </article>
 
         <article class="faq-item">
-          <h3>What happens during the sessions? </h3>
-          <p>For the first session, you’ll be invited to introduce yourself and hear from others in the group. There might be a short icebreaker and a summary of how the sessions will look.  
-            </p>
-            <p>Next up: the Bible.</p>  
-            <p>Each session, you’ll read or listen to an audio version of the text of the week. </p>
-            <p>Then, you’ll make your way through a short set of questions that help you dig deeper into the text. Simple and straightforward, it’s your chance to say what you like and dislike about the text, as well as exploring what you think it says about God and people. </p>
-        
+          <h3>What happens during the sessions?</h3>
+          <p>For the first session, you’ll be invited to introduce yourself and hear from others in the group. There might be a short icebreaker and a summary of how the sessions will look.</p>
+          <p>Next up: the Bible.</p>
+          <p>Each session, you’ll read or listen to an audio version of the text of the week.</p>
+          <p>Then, you’ll make your way through a short set of questions that help you dig deeper into the text. Simple and straightforward, it’s your chance to say what you like and dislike about the text, as well as exploring what you think it says about God and people.</p>
         </article>
 
         <article class="faq-item">
           <h3>How long do Bible Conversations last?</h3>
-          <p>Around 45 minutes. They'll be wrapped up by the finish time.</p>
+          <p>The sessions typically last between 45 minutes and an hour.</p>
         </article>
       </div>
 
@@ -424,11 +312,11 @@
     </section>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/leaflet.markercluster.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/app.js"></script>
+  <footer class="site-footer">
+    <p>This websites content © Bible Society 2026. Bible Society is not responsible for content of external sites.</p>
+  </footer>
+
+  <script src="js/site-nav.js"></script>
+  <script src="js/landing-search.js"></script>
 </body>
 </html>
