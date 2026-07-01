@@ -5819,8 +5819,20 @@ body.filter-panel-open .filter-panel {
     font-size: 20px;
   }
 
+  .hero-copy .hero-search-form .hero-search-helper {
+    color: #575757;
+    font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    margin: -4px 0 0;
+    max-width: none;
+    text-align: center;
+    width: auto;
+  }
+
   .hero-photo {
-    background: url("../img/girls.png") center / cover no-repeat;
+    background: url("../img/content-image-landing-1.png") center / cover no-repeat;
     margin-left: -96px;
     min-height: 568px;
     position: relative;
@@ -5865,16 +5877,24 @@ body.filter-panel-open .filter-panel {
 
   .conversation-row,
   .feature-row:not(.feature-row-flipped):not(.who-row) {
-    align-items: start;
-    gap: 22px;
-    grid-template-columns: minmax(360px, 475px) minmax(0, 1fr);
-    padding: 0 0 48px;
+    align-items: stretch;
+    background: var(--refresh-teal);
+    gap: 0;
+    grid-template-columns: minmax(0, 42%) minmax(0, 58%);
+    margin: 0;
+    padding: 0;
   }
 
   .conversation-row .photo-card,
   .feature-row:not(.feature-row-flipped):not(.who-row) img {
-    clip-path: polygon(0 0, 94% 0, 100% 100%, 0 100%);
-    height: 307px;
+    align-self: stretch;
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+    display: block;
+    height: 100%;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
   }
 
   .section-title-lockup {
@@ -5972,17 +5992,37 @@ body.filter-panel-open .filter-panel {
   }
 
   .conversation-card {
+    background: var(--refresh-teal);
     justify-self: stretch;
-    padding-top: 0;
+    padding: 28px clamp(28px, 6vw, 72px) 30px clamp(26px, 5vw, 64px);
   }
 
-  .conversation-heading {
-    margin-bottom: 18px;
+  .conversation-card h2 {
+    color: var(--Text-Main-text-primary-dark, #1E1E1E);
+    font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 28px;
+    margin: 0 0 16px;
+  }
+
+  .conversation-card > p {
+    color: var(--Text-Main-text-primary-dark, #1E1E1E);
+    font-size: 18px;
+    line-height: 24px;
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+
+  .conversation-card > p:last-of-type {
+    margin-bottom: 8px;
   }
 
   .conversation-card .conversation-detail-list {
     display: grid;
-    gap: 20px;
+    gap: 16px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -5993,12 +6033,12 @@ body.filter-panel-open .filter-panel {
     color: var(--Text-Main-text-primary-dark, #1E1E1E);
     display: grid;
     font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
-    font-size: 12px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
-    gap: 14px;
-    grid-template-columns: 24px minmax(0, 1fr);
-    line-height: 18px;
+    gap: 12px;
+    grid-template-columns: 26px minmax(0, 1fr);
+    line-height: 24px;
     margin: 0;
     padding: 0;
   }
@@ -6009,21 +6049,21 @@ body.filter-panel-open .filter-panel {
 
   .conversation-step-icon {
     align-items: center;
-    color: #111111;
+    color: #7c1cff;
     display: inline-flex;
-    font-size: 18px;
-    height: 24px;
+    font-size: 22px;
+    height: 26px;
     justify-content: center;
     letter-spacing: 0;
-    width: 24px;
+    width: 26px;
   }
 
   .info-card > h2 {
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 0.36px;
-    line-height: 24px;
-    margin: -16px 0 14px 45px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 28px;
+    margin: 0 0 16px;
   }
 
   .info-card > .section-title-lockup {
@@ -6049,6 +6089,11 @@ body.filter-panel-open .filter-panel {
     font-size: 16px;
     line-height: 24px;
     margin-bottom: 20px;
+  }
+
+  .conversation-card > p {
+    font-size: 18px;
+    line-height: 24px;
   }
 
   .info-card ul {
@@ -6923,7 +6968,7 @@ body.filter-panel-open .filter-panel {
 
   .landing-faq {
     background: #ffffff;
-    padding: 44px 75px 54px;
+    padding: 0 75px 54px;
   }
 
   .landing-faq .kicker {
@@ -6979,7 +7024,7 @@ body.filter-panel-open .filter-panel {
   .landing-faq .faq-copy {
     display: grid;
     gap: 22px;
-    max-width: 1120px;
+    max-width: 832px;
   }
 
   .landing-faq .faq-item h3 {
@@ -7004,6 +7049,7 @@ body.filter-panel-open .filter-panel {
 
   .landing-faq .faq-more-link {
     align-items: center;
+    align-self: flex-start;
     border: 1px solid #111111;
     border-radius: 999px;
     color: #111111;
@@ -7066,6 +7112,14 @@ body.filter-panel-open .filter-panel {
       font-size: 18px;
       line-height: 25px;
       margin-top: 15px;
+    }
+
+    .hero-copy .hero-search-form .hero-search-helper {
+      color: #575757;
+      font-size: 13px;
+      line-height: 18px;
+      margin: -4px 0 0;
+      text-align: center;
     }
 
     .primary-cta {
@@ -7324,6 +7378,14 @@ body.filter-panel-open .filter-panel {
       text-align: left;
     }
 
+    .hero-copy .hero-search-form .hero-search-helper {
+      color: #575757;
+      font-size: 13px;
+      line-height: 18px;
+      margin: -4px 0 0;
+      text-align: center;
+    }
+
     .hero-copy .hero-text {
       font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
       font-size: 20px;
@@ -7388,8 +7450,9 @@ body.filter-panel-open .filter-panel {
     }
 
     .conversation-row {
+      background: var(--refresh-teal);
       gap: 0;
-      padding: 0 0 28px;
+      padding: 0;
     }
 
     .conversation-row .photo-card,
@@ -7401,7 +7464,8 @@ body.filter-panel-open .filter-panel {
     }
 
     .conversation-card {
-      padding: 18px 11px 0;
+      background: var(--refresh-teal);
+      padding: 24px 20px 28px;
     }
 
     .section-title-lockup {
@@ -7432,35 +7496,36 @@ body.filter-panel-open .filter-panel {
       line-height: 16px;
     }
 
-    .conversation-heading {
-      margin-bottom: 18px;
+    .conversation-card h2 {
+      font-size: 24px;
+      line-height: 28px;
+      margin: 0 0 14px;
+    }
+
+    .conversation-card > p {
+      font-size: 18px;
+      line-height: 24px;
+      margin-bottom: 22px;
+    }
+
+    .conversation-card > p:last-of-type {
+      margin-bottom: 8px;
     }
 
     .conversation-card .conversation-detail-list {
-      gap: 15px;
+      gap: 12px;
     }
 
     .conversation-card .conversation-detail-list li {
-      font-size: 13px;
-      line-height: 18px;
-    }
-
-    .conversation-card .conversation-detail-list li:nth-child(-n + 2) {
-      display: block;
-    }
-
-    .conversation-card .conversation-detail-list li:nth-child(-n + 2) .conversation-step-icon {
-      display: none;
-    }
-
-    .conversation-card .conversation-detail-list li:nth-child(n + 3) {
-      grid-template-columns: 20px minmax(0, 1fr);
+      font-size: 18px;
+      grid-template-columns: 24px minmax(0, 1fr);
+      line-height: 24px;
     }
 
     .conversation-step-icon {
-      font-size: 16px;
-      height: 20px;
-      width: 20px;
+      font-size: 20px;
+      height: 24px;
+      width: 24px;
     }
 
     .testimonial-band {
@@ -7849,6 +7914,7 @@ body.filter-panel-open .filter-panel {
     }
 
     .landing-faq .faq-more-link {
+      align-self: stretch;
       display: flex;
       margin-top: 24px;
       width: 100%;
@@ -7972,10 +8038,10 @@ body.filter-panel-open .filter-panel {
 }
 
 .landing-page .title-wrap .hero-teesside-logo {
-  bottom: -42px;
+  bottom: -24px;
   height: 68px;
   position: absolute;
-  right: 56px;
+  right: 16px;
   z-index: 3;
 }
 
@@ -8766,14 +8832,14 @@ body.filter-panel-open .filter-panel {
     }
 
     .conversation-row {
-      background: #ffffff;
+      background: var(--refresh-teal);
       display: block;
       margin: 0;
-      padding: 0 0 28px;
+      padding: 0;
     }
 
     .conversation-row .photo-card {
-      clip-path: polygon(0 0, 100% 0, 100% 91%, 0 100%);
+      clip-path: none;
       display: block;
       height: auto;
       margin: 0;
@@ -8783,8 +8849,8 @@ body.filter-panel-open .filter-panel {
     }
 
     .conversation-card {
-      background: #ffffff;
-      padding: 16px 11px 0;
+      background: var(--refresh-teal);
+      padding: 24px 20px 28px;
     }
 
     .testimonial-band,
@@ -9000,8 +9066,8 @@ body.filter-panel-open .filter-panel {
   }
 
   .site-page.landing-page:not(.index-page) .conversation-row {
-    padding-left: 75px;
-    padding-right: 75px;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -9210,8 +9276,8 @@ body.filter-panel-open .filter-panel {
       height: 54px;
       margin: 0;
       position: absolute;
-      right: 36px;
-      top: 46px;
+      right: 86px;
+      top: 48px;
     }
 
     .hero-copy .hero-text {
@@ -9429,6 +9495,14 @@ body.filter-panel-open .filter-panel {
       line-height: 25px;
     }
 
+    .hero-copy .hero-search-form .hero-search-helper {
+      color: #575757;
+      font-size: 13px;
+      line-height: 18px;
+      margin: -4px 0 0;
+      text-align: center;
+    }
+
     .primary-cta {
       box-sizing: border-box;
       min-width: 0;
@@ -9470,9 +9544,20 @@ body.filter-panel-open .filter-panel {
 
     .conversation-row,
     .feature-row:not(.feature-row-flipped):not(.who-row) {
-      grid-template-columns: minmax(300px, 42%) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 52%) minmax(0, 1fr);
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .landing-faq {
       padding-left: 40px;
       padding-right: 40px;
+    }
+
+    .landing-faq .faq-more-link {
+      align-self: stretch;
+      display: flex;
+      width: 100%;
     }
 
     .session-overview-section {
