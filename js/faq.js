@@ -88,16 +88,6 @@
       list.hidden = isOpen;
     });
 
-    list.addEventListener('click', function(event) {
-      const link = event.target.closest('a');
-
-      if (!link) {
-        return;
-      }
-
-      toggle.setAttribute('aria-expanded', 'false');
-      list.hidden = true;
-    });
   }
 
   document.addEventListener('DOMContentLoaded', function() {

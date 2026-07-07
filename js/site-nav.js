@@ -28,5 +28,17 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', setupPrimaryNav);
+  function setupStickyHeaderShadow() {
+    const updateHeaderShadow = function() {
+      document.body.classList.toggle('is-header-stuck', (window.scrollY || window.pageYOffset) > 0);
+    };
+
+    updateHeaderShadow();
+    window.addEventListener('scroll', updateHeaderShadow, { passive: true });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    setupPrimaryNav();
+    setupStickyHeaderShadow();
+  });
 })();

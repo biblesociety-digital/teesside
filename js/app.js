@@ -941,37 +941,30 @@ function renderEventCard(event, index, options = {}) {
   const cardUrl = eventbriteUrl || '#';
   const cardTarget = eventbriteUrl ? ' target="_blank" rel="noopener noreferrer"' : ' data-missing-eventbrite-link="true"';
   const cardLabel = eventbriteUrl ? 'Open Eventbrite booking for' : 'Missing Eventbrite booking link for';
-  const actionLabel = options.actionLabel || 'More details';
-  const displayDate = event.nextOccurrenceDate || event.startDate;
-  const mapId = options.mapId || `eventCardMap${index}`;
-  const mapIndex = options.mapIndex ?? index;
   const eventKey = getEventKey(event);
+  const actionLabel = options.actionLabel || 'More details';
   const selectedClass = options.selected ? ' selected' : '';
   const compactClass = options.compact ? ' compact-event-card' : '';
-  const collapseInlineMap = !options.hideMap && isMobileLandingView();
-  const mapMarkup = options.hideMap ? '' : `
-      <div class="event-card-map" id="${escapeAttribute(mapId)}" data-card-map-index="${escapeAttribute(mapIndex)}" aria-label="Map showing ${escapeAttribute(event.locationName || 'event location')}"${collapseInlineMap ? ' hidden' : ''}></div>`;
-  const mapToggleMarkup = options.hideMap ? '' : `
-      <span class="event-card-map-link" role="button" tabindex="0" data-card-map-toggle data-card-map-index="${escapeAttribute(mapIndex)}" aria-controls="${escapeAttribute(mapId)}" aria-expanded="${String(!collapseInlineMap)}">
-        <span data-card-map-toggle-label>${collapseInlineMap ? 'View map' : 'Hide map'}</span>
-      </span>`;
+  const description = event.description || 'Join a relaxed chat over coffee. Come and go as your time allows.';
 
   return `
     <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">
-      <div class="event-card-header">
-        <div>
-          <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>
-          <p class="event-card-when">${escapeHTML(formatCardDateTime(event, displayDate))}</p>
-        </div>
+      <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>
+      <p class="event-card-address event-card-meta-item">
+        <img src="img/icon-location.svg" alt="" aria-hidden="true">
+        <span class="event-card-meta-text">${escapeHTML(getEventAddressLine(event))}</span>
+      </p>
+      <p class="event-card-description">${escapeHTML(description)}</p>
+      <div class="event-card-meta-row">
+        <span class="event-card-chip event-card-date-chip event-card-meta-item">
+          <img src="img/icon-date.svg" alt="" aria-hidden="true">
+          <span class="event-card-meta-text">${escapeHTML(formatResultDateChip(event))}</span>
+        </span>
+        <span class="event-card-chip event-card-time-chip event-card-meta-item">
+          <img src="img/icon-time.svg" alt="" aria-hidden="true">
+          <span class="event-card-meta-text">${escapeHTML(formatResultTimeChip(event.time))}</span>
+        </span>
       </div>
-
-      ${mapMarkup}
-
-      <p class="event-card-location"><span class="material-symbols-outlined" aria-hidden="true">location_on</span>${escapeHTML(getEventLocationLine(event))}</p>
-      ${mapToggleMarkup}
-      <p class="event-card-sessions"><span class="material-symbols-outlined" aria-hidden="true">event_repeat</span>${escapeHTML(getEventSeriesLine(event))}</p>
-      <p class="event-card-description">${escapeHTML(event.description || 'Join a relaxed chat over coffee. Come and go as your time allows.')}</p>
-
       <span class="event-link">${escapeHTML(actionLabel)}</span>
     </a>
   `;
@@ -1019,6 +1012,79 @@ function formatCardTime(timeString) {
   const displayHours = hours % 12 || 12;
 
   return `${displayHours}:${String(mins).padStart(2, '0')}${suffix}`;
+}
+
+function getEventAddressLine(event) {
+  return event.address || event.locationName || event.postcode || 'Address TBC';
+}
+
+function formatResultDateChip(event) {
+  const day = formatShortWeekday(event.dayOfWeek);
+  const startDate = parseLocalDate(event.startDate || event.nextOccurrenceDate);
+
+  if (!startDate) {
+    return day;
+  }
+
+  const endDate = getEventSeriesEndDate(event, startDate);
+  const startText = formatResultChipDate(startDate);
+  const endText = endDate ? formatResultChipDate(endDate) : '';
+
+  return endText ? `${day} • ${startText}–${endText}` : `${day} • ${startText}`;
+}
+
+function formatShortWeekday(dayName) {
+  const dayIndexes = {
+    sunday: 'Sun',
+    monday: 'Mon',
+    tuesday: 'Tue',
+    wednesday: 'Wed',
+    thursday: 'Thu',
+    friday: 'Fri',
+    saturday: 'Sat'
+  };
+  const normalizedDay = String(dayName || '').trim().toLowerCase();
+  return dayIndexes[normalizedDay] || 'Weekly';
+}
+
+function formatResultChipDate(date) {
+  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' })
+    .format(date)
+    .replace('Sept', 'Sept')
+    .replace('Sep', 'Sept');
+}
+
+function formatResultTimeChip(timeString) {
+  const startMinutes = getEventStartMinutes(timeString);
+
+  if (startMinutes === null) {
+    return timeString || 'Time TBC';
+  }
+
+  const endMinutes = startMinutes + 60;
+  const startSuffix = getResultTimeSuffix(startMinutes);
+  const endSuffix = getResultTimeSuffix(endMinutes);
+  const startText = formatResultChipTime(startMinutes);
+  const endText = formatResultChipTime(endMinutes);
+
+  return startSuffix === endSuffix
+    ? `${startText}–${endText} ${endSuffix}`
+    : `${startText} ${startSuffix}–${endText} ${endSuffix}`;
+}
+
+function getResultTimeSuffix(minutes) {
+  const normalizedMinutes = ((minutes % (24 * 60)) + (24 * 60)) % (24 * 60);
+  const hours = Math.floor(normalizedMinutes / 60);
+  return hours >= 12 ? 'pm' : 'am';
+}
+
+function formatResultChipTime(minutes) {
+  const normalizedMinutes = ((minutes % (24 * 60)) + (24 * 60)) % (24 * 60);
+  const hours = Math.floor(normalizedMinutes / 60);
+  const mins = normalizedMinutes % 60;
+  const displayHours = hours % 12 || 12;
+
+  return `${displayHours}.${String(mins).padStart(2, '0')}`;
 }
 
 function getEventLocationLine(event) {
