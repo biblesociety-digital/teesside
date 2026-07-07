@@ -109,6 +109,36 @@
         <a href="about-us.html">About us</a>
       </nav>
     </div>
+    <nav class="search-results-subnav" aria-label="Search results controls">
+      <div class="search-results-subnav-group search-results-subnav-primary">
+        <button class="search-results-back-button" type="button" id="changeSearchButton" aria-label="Change my search">
+          <span class="search-results-back-icon-wrap">
+            <img src="img/icon-search-back.svg" alt="" aria-hidden="true">
+          </span>
+        </button>
+        <div class="view-toggle search-results-view-toggle" role="group" aria-label="Choose results view">
+          <button class="view-toggle-button search-results-nav-button active" type="button" data-results-view-button="list" aria-pressed="true">
+            <img src="img/icon-list-view.svg" alt="" aria-hidden="true">
+            <span>List</span>
+          </button>
+          <button class="view-toggle-button search-results-nav-button" type="button" data-results-view-button="map" aria-pressed="false">
+            <img src="img/icon-map-view.svg" alt="" aria-hidden="true">
+            <span>Map</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-results-subnav-group search-results-subnav-secondary">
+        <button class="result-action-button search-results-nav-button" type="button" id="filterPanelToggle" aria-expanded="false" aria-controls="filterPanel">
+          <img src="img/icon-search-filter.svg" alt="" aria-hidden="true">
+          <span>Filter</span>
+        </button>
+        <button class="result-action-button search-results-nav-button" type="button" id="sortResultsButton">
+          <img src="img/icon-search-sort.svg" alt="" aria-hidden="true">
+          <span>Sort</span>
+        </button>
+      </div>
+    </nav>
   </header>
 
   <main class="experience-main">
@@ -156,39 +186,7 @@
       <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
     </section>
 
-    <section class="results-section" aria-labelledby="resultsToolbarTitle">
-      <div class="results-toolbar">
-        <div class="view-toggle" role="group" aria-label="Choose results view">
-          <button class="view-toggle-button active" type="button" data-results-view-button="list" aria-pressed="true">
-            <span class="material-symbols-outlined" aria-hidden="true">check</span>
-            List view
-          </button>
-          <button class="view-toggle-button" type="button" data-results-view-button="map" aria-pressed="false">
-            <span class="material-symbols-outlined" aria-hidden="true">map</span>
-            Map view
-          </button>
-        </div>
-
-        <div class="results-toolbar-body">
-          <div class="results-toolbar-heading">
-            <span class="section-kicker" id="resultsViewLabel">List</span>
-            <h2 id="resultsToolbarTitle">Your search results</h2>
-            <p><strong id="eventCountSummary">0</strong> <span id="eventCountSummaryLabel">events found</span></p>
-          </div>
-
-          <div class="results-toolbar-actions">
-            <button class="result-action-button" type="button" id="changeSearchButton">
-              <span class="material-symbols-outlined" aria-hidden="true">sync</span>
-              Change my search
-            </button>
-            <button class="result-action-button" type="button" id="filterPanelToggle" aria-expanded="false" aria-controls="filterPanel">
-              <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
-              Filter
-            </button>
-          </div>
-        </div>
-      </div>
-
+    <section class="results-section" aria-label="Search results">
       <div class="filter-panel-backdrop" id="filterPanelBackdrop" hidden></div>
       <aside class="filter-panel" id="filterPanel" role="dialog" aria-modal="true" aria-labelledby="filterPanelTitle" aria-hidden="true">
         <div class="filter-panel-header">
@@ -264,6 +262,21 @@
       </div>
     </section>
   </main>
+
+  <div class="result-map-modal" id="resultMapModal" role="dialog" aria-modal="true" aria-labelledby="resultMapModalLocation" hidden>
+    <div class="result-map-modal-panel">
+      <div class="result-map-modal-bar">
+        <p class="result-map-modal-location event-card-address event-card-meta-item">
+          <img src="img/icon-location.svg" alt="" aria-hidden="true">
+          <span class="event-card-meta-text" id="resultMapModalLocation"></span>
+        </p>
+        <button class="result-map-modal-close" type="button" aria-label="Close map" data-result-map-modal-close>
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <div class="result-map-modal-map" id="resultMapModalMap"></div>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.1/leaflet.markercluster.min.js"></script>

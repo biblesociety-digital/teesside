@@ -27,6 +27,9 @@ const RECAPTCHA_SITE_KEY_PLACEHOLDER = 'REPLACE_WITH_RECAPTCHA_SITE_KEY';
 let currentTimeframeFilter = DEFAULT_TIMEFRAME_FILTER;
 let currentPageEvents = [];
 let selectedMapEvent = null;
+let resultMapModalMap = null;
+let resultMapModalMarker = null;
+let resultMapModalTrigger = null;
 let recaptchaLoaderPromise = null;
 const DAY_INDEXES = {
   sunday: 0,
@@ -126,6 +129,64 @@ function addLocationMarkers(locations = getAllLocations()) {
   map.addLayer(markerClusterGroup);
 }
 
+function addCloseMatchEventMarkers(events) {
+  removeSelectedEventMarker();
+
+  if (markerClusterGroup) {
+    map.removeLayer(markerClusterGroup);
+  }
+
+  markerClusterGroup = createMarkerLayer();
+  markers = [];
+
+  const markerEventsByLocation = new Map();
+
+  events.forEach(event => {
+    if (!event?.locationId || markerEventsByLocation.has(event.locationId) || !hasValidCoordinates(event)) {
+      return;
+    }
+
+    markerEventsByLocation.set(event.locationId, event);
+  });
+
+  markerEventsByLocation.forEach(event => {
+    const marker = L.marker([event.latitude, event.longitude], {
+      icon: createEventMarkerIcon(),
+      title: event.locationName || event.title || 'Event location'
+    });
+
+    marker.locationId = event.locationId;
+    marker.eventKey = getEventKey(event);
+    marker.bindPopup(createSelectedEventPopup(event), {
+      className: 'event-card-popup',
+      closeButton: false,
+      maxWidth: 340,
+      minWidth: 300,
+      offset: [0, -18]
+    });
+
+    marker.on('click', function() {
+      selectedMapEvent = event;
+      highlightSelectedEventCard();
+    });
+
+    markerClusterGroup.addLayer(marker);
+    markers.push(marker);
+  });
+
+  visibleLocations = Array.from(markerEventsByLocation.values()).map(event => ({
+    id: event.locationId,
+    name: event.locationName,
+    address: event.address,
+    postcode: event.postcode,
+    latitude: event.latitude,
+    longitude: event.longitude,
+    events: [event]
+  }));
+
+  map.addLayer(markerClusterGroup);
+}
+
 function createEventCardPopup(location) {
   const popup = document.createElement('div');
   const event = getMapPopupEvent(location);
@@ -137,6 +198,8 @@ function createEventCardPopup(location) {
   popup.innerHTML = renderEventCard(event, `map-popup-${location.id}`, {
     compact: true,
     hideMap: true,
+    hidePopupDetails: true,
+    popupCard: true,
     selected: true,
     actionLabel: 'More details'
   });
@@ -192,6 +255,7 @@ function setupEventListeners() {
   setupFilterPills();
   setupResultsViewToggle();
   setupFilterPanel();
+  setupResultMapModal();
   setupAgeConfirmationGate();
 
   // Postcode input - allow Enter key
@@ -234,6 +298,8 @@ function setupEventListeners() {
   if (eventsList) {
     eventsList.addEventListener('click', handleEventCardMapToggle);
     eventsList.addEventListener('keydown', handleEventCardMapToggle);
+    eventsList.addEventListener('click', handleResultMapModalToggle);
+    eventsList.addEventListener('keydown', handleResultMapModalToggle);
     eventsList.addEventListener('click', handleSearchResultCardSelection);
     eventsList.addEventListener('keydown', handleSearchResultCardSelection);
     eventsList.addEventListener('click', handleEventbriteActionLink);
@@ -443,6 +509,7 @@ function setupFilterPanel() {
   }
 
   function openPanel() {
+    syncFilterControls();
     syncFilterPanelSearchFields();
     backdrop.hidden = false;
     document.body.classList.add('filter-panel-open');
@@ -513,10 +580,9 @@ function setupFilterSearchInputs() {
   const filterRadiusInput = document.getElementById('filterRadiusInput');
 
   if (filterPostcodeInput) {
-    filterPostcodeInput.addEventListener('keydown', async function(event) {
+    filterPostcodeInput.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
         event.preventDefault();
-        await applyFilterPanelSearch();
       }
     });
   }
@@ -549,6 +615,10 @@ async function applyFilterPanelSearch() {
   const filterPostcodeInput = document.getElementById('filterPostcodeInput');
   const filterRadiusInput = document.getElementById('filterRadiusInput');
 
+  currentTimeframeFilter = getSelectedFilterValue('timeframe', DEFAULT_TIMEFRAME_FILTER);
+  currentTimeOfDayFilter = getSelectedFilterValue('timeOfDay', 'all');
+  currentDayOfWeekFilter = getSelectedFilterValue('dayOfWeek', 'all');
+
   if (filterPostcodeInput && postcodeInput) {
     postcodeInput.value = filterPostcodeInput.value.trim();
   }
@@ -561,12 +631,13 @@ async function applyFilterPanelSearch() {
   }
 
   if (postcodeInput?.value.trim()) {
-    await searchByPostcode();
+    await searchByPostcode({ preserveResultsView: true });
     return;
   }
 
   currentPage = 1;
   renderLocations(currentLocationSet);
+  setResultsView(document.body.dataset.resultsView || 'list', { preserveSearchState: true });
 }
 
 function setupPrimaryNav() {
@@ -614,22 +685,12 @@ function setupFilterPills() {
       const target = this.dataset.filterTarget;
       const value = this.dataset.filterValue || 'all';
 
-      if (target === 'timeframe') {
-        filterByTimeframe(value);
-      }
-
-      if (target === 'timeOfDay') {
-        filterByTimeOfDay(value);
-      }
-
-      if (target === 'dayOfWeek') {
-        filterByDayOfWeek(value);
-      }
+      setFilterPillState(target, value);
     });
   });
 }
 
-async function searchByPostcode() {
+async function searchByPostcode(options = {}) {
   const ageConfirmation = document.getElementById('ageConfirmation');
   if (ageConfirmation && !ageConfirmation.checked) {
     showError('Please confirm you are 18 or over before searching.');
@@ -669,7 +730,9 @@ async function searchByPostcode() {
   
   // Find locations within radius
   const nearbyLocations = findNearbyLocations(coords.lat, coords.lon, searchRadius);
-  const defaultResultsView = isMobileLandingView() ? 'list' : 'map';
+  const defaultResultsView = options.preserveResultsView
+    ? (document.body.dataset.resultsView || 'list')
+    : (isMobileLandingView() ? 'list' : 'map');
   addSearchMarker(coords, searchRadius);
   fitMapToSearchArea(coords);
   
@@ -925,6 +988,10 @@ function displayFilteredEvents(events) {
     ? `<p class="empty-state close-match-message">${escapeHTML(closeMatchMessage)}</p>`
     : '';
 
+  if (closeMatchMessage) {
+    addCloseMatchEventMarkers(displayEvents);
+  }
+
   eventsList.innerHTML = closeMatchMarkup + paged.pageEvents
     .map((event, index) => renderEventCard(event, index))
     .join('');
@@ -945,16 +1012,23 @@ function renderEventCard(event, index, options = {}) {
   const actionLabel = options.actionLabel || 'More details';
   const selectedClass = options.selected ? ' selected' : '';
   const compactClass = options.compact ? ' compact-event-card' : '';
+  const popupCardClass = options.popupCard ? ' map-popup-card' : '';
   const description = event.description || 'Join a relaxed chat over coffee. Come and go as your time allows.';
-
-  return `
-    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">
-      <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>
+  const mapLinkMarkup = !options.hidePopupDetails && hasValidCoordinates(event)
+    ? ` <span class="event-card-address-separator" aria-hidden="true">•</span> <span class="event-card-map-modal-link" role="link" tabindex="0" data-event-key="${escapeAttribute(eventKey)}">view map</span>`
+    : '';
+  const detailsMarkup = options.hidePopupDetails ? '' : `
       <p class="event-card-address event-card-meta-item">
         <img src="img/icon-location.svg" alt="" aria-hidden="true">
-        <span class="event-card-meta-text">${escapeHTML(getEventAddressLine(event))}</span>
+        <span class="event-card-meta-text">${escapeHTML(getEventAddressLine(event))}${mapLinkMarkup}</span>
       </p>
-      <p class="event-card-description">${escapeHTML(description)}</p>
+      <p class="event-card-description">${escapeHTML(description)}</p>`;
+  const actionMarkup = options.hidePopupDetails ? '' : `
+      <span class="event-link">${escapeHTML(actionLabel)}</span>`;
+
+  return `
+    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}${popupCardClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">
+      <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>${detailsMarkup}
       <div class="event-card-meta-row">
         <span class="event-card-chip event-card-date-chip event-card-meta-item">
           <img src="img/icon-date.svg" alt="" aria-hidden="true">
@@ -964,8 +1038,7 @@ function renderEventCard(event, index, options = {}) {
           <img src="img/icon-time.svg" alt="" aria-hidden="true">
           <span class="event-card-meta-text">${escapeHTML(formatResultTimeChip(event.time))}</span>
         </span>
-      </div>
-      <span class="event-link">${escapeHTML(actionLabel)}</span>
+      </div>${actionMarkup}
     </a>
   `;
 }
@@ -1139,6 +1212,112 @@ function handleEventCardMapToggle(event) {
   event.stopPropagation();
   event.stopImmediatePropagation();
   toggleEventCardMap(Number(toggle.dataset.cardMapIndex), toggle);
+}
+
+function setupResultMapModal() {
+  const modal = document.getElementById('resultMapModal');
+
+  if (!modal) {
+    return;
+  }
+
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal || event.target.closest('[data-result-map-modal-close]')) {
+      closeResultMapModal();
+    }
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && !modal.hidden) {
+      closeResultMapModal();
+    }
+  });
+}
+
+function handleResultMapModalToggle(event) {
+  const trigger = event.target.closest('.event-card-map-modal-link[data-event-key]');
+
+  if (!trigger) {
+    return;
+  }
+
+  if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
+
+  const selectedEvent = currentPageEvents.find(pageEvent => getEventKey(pageEvent) === trigger.dataset.eventKey);
+
+  if (!selectedEvent) {
+    return;
+  }
+
+  resultMapModalTrigger = trigger;
+  openResultMapModal(selectedEvent);
+}
+
+function openResultMapModal(event) {
+  const modal = document.getElementById('resultMapModal');
+  const mapElement = document.getElementById('resultMapModalMap');
+  const locationElement = document.getElementById('resultMapModalLocation');
+  const latitude = Number(event?.latitude);
+  const longitude = Number(event?.longitude);
+
+  if (!modal || !mapElement || !locationElement || !Number.isFinite(latitude) || !Number.isFinite(longitude) || typeof L === 'undefined') {
+    return;
+  }
+
+  locationElement.textContent = getEventAddressLine(event);
+  modal.hidden = false;
+  document.body.classList.add('result-map-modal-open');
+  modal.querySelector('[data-result-map-modal-close]')?.focus();
+
+  if (!resultMapModalMap) {
+    resultMapModalMap = L.map(mapElement, {
+      scrollWheelZoom: false,
+      touchZoom: true,
+      zoomControl: true
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    }).addTo(resultMapModalMap);
+  }
+
+  resultMapModalMap.setView([latitude, longitude], 15);
+
+  if (resultMapModalMarker) {
+    resultMapModalMarker.remove();
+  }
+
+  resultMapModalMarker = L.marker([latitude, longitude], {
+    icon: createEventMarkerIcon(),
+    title: event.locationName || event.title || 'Event location'
+  }).addTo(resultMapModalMap);
+
+  window.setTimeout(() => {
+    resultMapModalMap.invalidateSize();
+  }, 0);
+}
+
+function closeResultMapModal() {
+  const modal = document.getElementById('resultMapModal');
+
+  if (!modal) {
+    return;
+  }
+
+  modal.hidden = true;
+  document.body.classList.remove('result-map-modal-open');
+
+  if (resultMapModalTrigger?.isConnected) {
+    resultMapModalTrigger.focus();
+  }
+
+  resultMapModalTrigger = null;
 }
 
 function handleSearchResultCardSelection(event) {
@@ -1438,6 +1617,8 @@ function createSelectedEventPopup(event) {
   popup.innerHTML = renderEventCard(event, `selected-marker-${event.locationId}`, {
     compact: true,
     hideMap: true,
+    hidePopupDetails: true,
+    popupCard: true,
     selected: true,
     actionLabel: 'More details'
   });
@@ -1597,13 +1778,9 @@ function filterByDayOfWeek(dayOfWeek) {
 }
 
 function resetEventFilters() {
-  currentTimeframeFilter = DEFAULT_TIMEFRAME_FILTER;
-  currentTimeOfDayFilter = 'all';
-  currentDayOfWeekFilter = 'all';
-  syncFilterControls();
-  syncFilterPanelSearchFields();
-  currentPage = 1;
-  renderLocations(currentLocationSet);
+  setFilterPillState('timeframe', DEFAULT_TIMEFRAME_FILTER);
+  setFilterPillState('timeOfDay', 'all');
+  setFilterPillState('dayOfWeek', 'all');
 }
 
 function syncFilterControls() {
@@ -1617,6 +1794,11 @@ function setFilterPillState(target, value) {
     button.classList.toggle('active', button.dataset.filterValue === value);
     button.setAttribute('aria-pressed', String(button.dataset.filterValue === value));
   });
+}
+
+function getSelectedFilterValue(target, fallback = 'all') {
+  const selectedButton = document.querySelector(`.filter-pill[data-filter-target="${target}"].active`);
+  return selectedButton?.dataset.filterValue || fallback;
 }
 
 function applyLocationFilters(locations) {
