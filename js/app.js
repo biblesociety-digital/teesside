@@ -881,6 +881,9 @@ function getFilteredEvents(locations) {
     filteredEvents.forEach(event => {
       const occurrenceDates = getVisibleEventOccurrenceDates(event);
       const nextOccurrenceDate = occurrenceDates[0];
+      const distance = lastSearchCoords && hasValidCoordinates(location)
+        ? calculateDistance(lastSearchCoords.lat, lastSearchCoords.lon, location.latitude, location.longitude)
+        : null;
 
       if (!nextOccurrenceDate) {
         return;
@@ -889,6 +892,7 @@ function getFilteredEvents(locations) {
       allEvents.push({
         ...event,
         nextOccurrenceDate: dateToDateString(nextOccurrenceDate),
+        matchDistance: distance,
         locationName: location.name,
         locationId: location.id,
         latitude: location.latitude,
@@ -1014,6 +1018,14 @@ function renderEventCard(event, index, options = {}) {
   const compactClass = options.compact ? ' compact-event-card' : '';
   const popupCardClass = options.popupCard ? ' map-popup-card' : '';
   const description = event.description || 'Join a relaxed chat over coffee. Come and go as your time allows.';
+  const distanceLabel = formatDistanceLabel(event.matchDistance);
+  const distanceMarkup = !options.hidePopupDetails && distanceLabel
+    ? `
+      <span class="event-card-chip event-card-distance-chip event-card-meta-item">
+        <img src="img/icon-miles-away.svg" alt="" aria-hidden="true">
+        <span class="event-card-meta-text">${escapeHTML(distanceLabel)}</span>
+      </span>`
+    : '';
   const mapLinkMarkup = !options.hidePopupDetails && hasValidCoordinates(event)
     ? ` <span class="event-card-address-separator" aria-hidden="true">•</span> <span class="event-card-map-modal-link" role="link" tabindex="0" data-event-key="${escapeAttribute(eventKey)}">view map</span>`
     : '';
@@ -1027,7 +1039,7 @@ function renderEventCard(event, index, options = {}) {
       <span class="event-link">${escapeHTML(actionLabel)}</span>`;
 
   return `
-    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}${popupCardClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">
+    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}${popupCardClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">${distanceMarkup}
       <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>${detailsMarkup}
       <div class="event-card-meta-row">
         <span class="event-card-chip event-card-date-chip event-card-meta-item">
@@ -1089,6 +1101,16 @@ function formatCardTime(timeString) {
 
 function getEventAddressLine(event) {
   return event.address || event.locationName || event.postcode || 'Address TBC';
+}
+
+function formatDistanceLabel(distance) {
+  const miles = Number(distance);
+
+  if (!Number.isFinite(miles)) {
+    return '';
+  }
+
+  return `${miles.toFixed(1)} miles away`;
 }
 
 function formatResultDateChip(event) {

@@ -1352,9 +1352,6 @@ button.btn-success:hover {
   }
 }
 @media (max-width: 768px) {
-  header {
-    padding: 15px 0;
-  }
   .header-content {
     flex-direction: column;
     gap: 15px;
@@ -1524,7 +1521,7 @@ button.btn-success:hover {
   background: var(--experience-teal);
   display: grid;
   grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
-  min-height: 420px;
+  min-height: 500px;
   overflow: hidden;
   position: relative;
 }
@@ -1607,7 +1604,7 @@ button.btn-success:hover {
 
 .experience-hero-image {
   background: url("../img/full page.jpg") center top/cover no-repeat;
-  min-height: 420px;
+  min-height: 500px;
 }
 
 .stats-strip {
@@ -4440,7 +4437,7 @@ body.filter-panel-open .filter-panel {
   color: #111111;
   display: grid;
   grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
-  min-height: 420px;
+  min-height: 500px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -4522,7 +4519,7 @@ body.filter-panel-open .filter-panel {
 
 .experience-page .experience-hero-image {
   background: url("../img/full page.jpg") center top/cover no-repeat;
-  min-height: 420px;
+  min-height: 500px;
 }
 
 .experience-page .stats-inner,
@@ -5335,7 +5332,7 @@ body.filter-panel-open .filter-panel {
   }
   .site-page .brand img,
   .site-page .brand-logo {
-    height: 34px;
+    height: 48px;
   }
   .site-page .mini-tag,
   .site-page .header-teesside-badge.static {
@@ -6046,7 +6043,7 @@ line-height: 24px; /* 150% */
   gap: 16px;
   grid-template-columns: minmax(0, 1fr);
   padding-bottom: 58px;
-  padding-top: 26px;
+  padding-top: 59px;
 }
 .landing-page .results-toolbar {
   border: 0;
@@ -6857,7 +6854,7 @@ line-height: 24px; /* 150% */
     min-width: 0;
   }
   .landing-page .brand img {
-    height: 34px;
+    height: 48px;
     width: auto;
   }
   .landing-page .brand > .mini-tag {
@@ -8241,7 +8238,6 @@ line-height: 24px; /* 150% */
   .site-page .brand-link,
   .landing-page .brand {
     gap: 0;
-    min-height: 68px;
     width: 100%;
   }
   .site-page .brand > img:not(.header-teesside-logo),
@@ -8978,12 +8974,11 @@ line-height: 24px; /* 150% */
     align-items: center;
     display: flex;
     gap: 0;
-    min-height: 58px;
     width: 100%;
   }
   .site-page .brand > img:not(.header-teesside-logo),
   .site-page .brand-link > img:not(.header-teesside-logo) {
-    height: 34px;
+    height: 48px;
     width: auto;
   }
   .site-page .brand img.header-teesside-logo,
@@ -10420,6 +10415,7 @@ letter-spacing: 0.36px;
   align-items: center;
   color: #1E1E1E;
   display: flex;
+  flex: 1 1 auto;
   font-family: var(--font-family-Lable, Rustica), Roboto, Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
@@ -10985,6 +10981,7 @@ letter-spacing: 0.36px;
   align-items: center;
   color: #575757;
   display: flex;
+  flex: 1 1 auto;
   font-family: var(--font-family-Lable, Rustica), Roboto, Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
@@ -11005,8 +11002,9 @@ letter-spacing: 0.36px;
 
 .result-map-modal-location .event-card-meta-text {
   color: #575757;
+  flex: 1 1 auto;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   padding-top: 4px;
 }
 
@@ -11104,11 +11102,113 @@ body.result-map-modal-open {
   }
 
   .result-map-modal-panel {
-    max-height: calc(100vh - 32px);
+    max-height: calc(100vh - 16px);
   }
 
   .result-map-modal-map {
-    height: 58vh;
-    min-height: 300px;
+    height: 72vh;
+    min-height: 500px;
+  }
+}
+
+.site-page.landing-page:not(.index-page) .search-result-card .event-card-distance-chip,
+.leaflet-popup.event-card-popup .search-result-card .event-card-distance-chip {
+  background: #96F0EB;
+  color: #1E1E1E;
+  margin: 0 0 8px;
+}
+
+.site-page.landing-page:not(.index-page) .search-result-card .event-card-distance-chip .event-card-meta-text,
+.leaflet-popup.event-card-popup .search-result-card .event-card-distance-chip .event-card-meta-text {
+  color: #1E1E1E;
+}
+
+@media (max-width: 820px) {
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="list"] .results-section {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 24px;
+  }
+
+  .site-page.landing-page:not(.index-page)[data-results-view="list"] .events-section,
+  .site-page.landing-page:not(.index-page)[data-results-view="list"] .events-list,
+  .site-page.landing-page:not(.index-page)[data-results-view="list"] .events-section .event-card.search-result-card {
+    box-sizing: border-box;
+    max-width: 607px;
+    width: 100%;
+  }
+
+  .site-page.landing-page:not(.index-page)[data-results-view="list"] .events-section {
+    justify-self: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="list"] .results-section {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 24px;
+  }
+}
+
+@media (max-width: 820px) {
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] .results-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 24px;
+  }
+
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] .map-section,
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] [data-results-view-panel="map"] {
+    display: block;
+    order: 1;
+    width: 100%;
+  }
+
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] .events-section,
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] [data-results-view-panel="list"] {
+    display: block;
+    max-height: none;
+    order: 2;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-page.landing-page:not(.index-page)[data-search-state="results"][data-results-view="map"] .results-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .result-map-modal-bar {
+    align-items: flex-start;
+    display: block;
+    padding: 12px 48px 12px 16px;
+    position: relative;
+  }
+
+  .result-map-modal-location {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .result-map-modal-location img {
+    margin-top: 2px;
+  }
+
+  .result-map-modal-close {
+    height: 44px;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 44px;
   }
 }
