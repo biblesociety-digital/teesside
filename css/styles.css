@@ -6492,7 +6492,7 @@ line-height: 24px; /* 150% */
 }
 .landing-page .filter-field {
   display: grid;
-  gap: 8px;
+  gap: 0;
 }
 .landing-page .filter-panel label,
 .landing-page .filter-panel .filter-pill-group legend {
@@ -6503,7 +6503,7 @@ line-height: 24px; /* 150% */
   font-weight: 500;
   letter-spacing: 0;
   line-height: 20px;
-  margin: 0;
+  margin: 0 0 8px;
 }
 .landing-page .filter-panel .mui-input {
   background: #ffffff;
@@ -6521,7 +6521,7 @@ line-height: 24px; /* 150% */
 }
 .landing-page .filter-pill-group {
   display: grid;
-  gap: 10px;
+  gap: 0;
 }
 .landing-page .filter-pills {
   gap: 8px;

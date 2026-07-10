@@ -13,6 +13,7 @@
     const form = document.getElementById('landingSearchForm');
     const postcodeInput = document.getElementById('postcodeInput');
     const radiusInput = document.getElementById('radiusInput');
+    const eventTypeInput = document.getElementById('eventTypeInput');
 
     if (!form || !postcodeInput || !radiusInput) {
       return;
@@ -31,6 +32,10 @@
         postcode,
         radius: normalizeRadius(radiusInput.value)
       });
+
+      if (eventTypeInput && eventTypeInput.value && eventTypeInput.value !== 'all') {
+        params.set('eventType', eventTypeInput.value);
+      }
 
       window.location.href = `${form.action}?${params.toString()}`;
     });

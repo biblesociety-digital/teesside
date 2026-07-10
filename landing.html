@@ -127,6 +127,14 @@
               <input class="mui-input" type="text" id="postcodeInput" name="postcode" placeholder="e.g. NE99 1AR" autocomplete="postal-code" required>
             </div>
             <div class="form-group">
+              <label for="eventTypeInput">Event type</label>
+              <select class="mui-input" id="eventTypeInput" name="eventType">
+                <option value="all" selected>All events</option>
+                <option value="bible-conversation">The Bible Conversation</option>
+                <option value="bible-course">The Bible Course</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label for="radiusInput">Search radius (miles)</label>
               <select class="mui-input" id="radiusInput" name="radius">
                 <option value="0.25" selected>Just this area</option>

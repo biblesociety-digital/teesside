@@ -218,7 +218,16 @@
           </div>
 
           <fieldset class="filter-pill-group">
-            <legend>Start date</legend>
+            <legend>Event type</legend>
+            <div class="filter-pills">
+              <button class="filter-pill active" type="button" data-filter-target="eventType" data-filter-value="all">All events</button>
+              <button class="filter-pill" type="button" data-filter-target="eventType" data-filter-value="bible-conversation">The Bible Conversation</button>
+              <button class="filter-pill" type="button" data-filter-target="eventType" data-filter-value="bible-course">The Bible Course</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-pill-group">
+            <legend>Day of week</legend>
             <div class="filter-pills">
               <button class="filter-pill active" type="button" data-filter-target="dayOfWeek" data-filter-value="all">Any day</button>
               <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="monday">Monday</button>

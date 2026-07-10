@@ -15,13 +15,14 @@ let lastSearchCoords = null;
 let eventsData = {};
 let currentTimeOfDayFilter = 'all';
 let currentDayOfWeekFilter = 'all';
+let currentEventTypeFilter = 'all';
 let currentPage = 1;
 let searchRadius = 0.25;
 let lastTotalEventCount = 0;
 const EVENTS_PER_PAGE = 10;
 const MIN_SEARCH_RADIUS = 0.25;
 const MAX_SEARCH_RADIUS = 100;
-const DEFAULT_TIMEFRAME_FILTER = 'next3weeks';
+const DEFAULT_TIMEFRAME_FILTER = 'all';
 const EVENT_SESSION_COUNT = 4;
 const RECAPTCHA_SITE_KEY_PLACEHOLDER = 'REPLACE_WITH_RECAPTCHA_SITE_KEY';
 let currentTimeframeFilter = DEFAULT_TIMEFRAME_FILTER;
@@ -238,6 +239,7 @@ function renderLocations(locations) {
 
 function getVisibleEventCount(location) {
   let visibleEvents = filterActivateEvents(location.events || []);
+  visibleEvents = filterEventsByEventType(visibleEvents, currentEventTypeFilter);
   visibleEvents = filterEventsByDayOfWeek(visibleEvents, currentDayOfWeekFilter);
   visibleEvents = filterEventsByTimeOfDay(visibleEvents, currentTimeOfDayFilter);
 
@@ -616,6 +618,7 @@ async function applyFilterPanelSearch() {
   const filterRadiusInput = document.getElementById('filterRadiusInput');
 
   currentTimeframeFilter = getSelectedFilterValue('timeframe', DEFAULT_TIMEFRAME_FILTER);
+  currentEventTypeFilter = normalizeEventTypeFilter(getSelectedFilterValue('eventType', 'all'));
   currentTimeOfDayFilter = getSelectedFilterValue('timeOfDay', 'all');
   currentDayOfWeekFilter = getSelectedFilterValue('dayOfWeek', 'all');
 
@@ -772,6 +775,8 @@ async function hydrateSearchFromUrl() {
   const filterPostcodeInput = document.getElementById('filterPostcodeInput');
   const filterRadiusInput = document.getElementById('filterRadiusInput');
   const radius = clampSearchRadius(params.get('radius'));
+  currentEventTypeFilter = normalizeEventTypeFilter(params.get('eventType'));
+  syncFilterControls();
 
   if (postcodeInput) {
     postcodeInput.value = postcode;
@@ -875,7 +880,8 @@ function getFilteredEvents(locations) {
   
   locations.forEach(location => {
     const activeEvents = filterActivateEvents(location.events || []);
-    const dayFilteredEvents = filterEventsByDayOfWeek(activeEvents, currentDayOfWeekFilter);
+    const typeFilteredEvents = filterEventsByEventType(activeEvents, currentEventTypeFilter);
+    const dayFilteredEvents = filterEventsByDayOfWeek(typeFilteredEvents, currentDayOfWeekFilter);
     const filteredEvents = filterEventsByTimeOfDay(dayFilteredEvents, currentTimeOfDayFilter);
     
     filteredEvents.forEach(event => {
@@ -913,7 +919,7 @@ function getCloseMatchEvents() {
   const fallbackEvents = [];
 
   getAllLocations().forEach(location => {
-    const activeEvents = filterActivateEvents(location.events || []);
+    const activeEvents = filterEventsByEventType(filterActivateEvents(location.events || []), currentEventTypeFilter);
     const distance = lastSearchCoords && hasValidCoordinates(location)
       ? calculateDistance(lastSearchCoords.lat, lastSearchCoords.lon, location.latitude, location.longitude)
       : Number.POSITIVE_INFINITY;
@@ -1751,6 +1757,7 @@ function clearSearch() {
   
   // Reset filters
   currentTimeframeFilter = DEFAULT_TIMEFRAME_FILTER;
+  currentEventTypeFilter = 'all';
   currentTimeOfDayFilter = 'all';
   currentDayOfWeekFilter = 'all';
   syncFilterControls();
@@ -1785,6 +1792,13 @@ function filterByTimeframe(timeframe) {
   renderLocations(currentLocationSet);
 }
 
+function filterByEventType(eventType) {
+  currentEventTypeFilter = normalizeEventTypeFilter(eventType);
+  setFilterPillState('eventType', currentEventTypeFilter);
+  currentPage = 1;
+  renderLocations(currentLocationSet);
+}
+
 function filterByTimeOfDay(timeOfDay) {
   currentTimeOfDayFilter = timeOfDay;
   setFilterPillState('timeOfDay', timeOfDay);
@@ -1801,12 +1815,14 @@ function filterByDayOfWeek(dayOfWeek) {
 
 function resetEventFilters() {
   setFilterPillState('timeframe', DEFAULT_TIMEFRAME_FILTER);
+  setFilterPillState('eventType', 'all');
   setFilterPillState('timeOfDay', 'all');
   setFilterPillState('dayOfWeek', 'all');
 }
 
 function syncFilterControls() {
   setFilterPillState('timeframe', currentTimeframeFilter);
+  setFilterPillState('eventType', currentEventTypeFilter);
   setFilterPillState('timeOfDay', currentTimeOfDayFilter);
   setFilterPillState('dayOfWeek', currentDayOfWeekFilter);
 }
@@ -1896,6 +1912,25 @@ function getEventOccurrenceDatesInRange(event, rangeStart, rangeEnd) {
   }
 
   return occurrenceDates;
+}
+
+function normalizeEventTypeFilter(value) {
+  if (!value || value === 'all') {
+    return 'all';
+  }
+
+  const normalizedType = String(value).trim().toLowerCase();
+  return EVENT_TYPE_OPTIONS.some(option => option.value === normalizedType) ? normalizedType : 'all';
+}
+
+function filterEventsByEventType(events, eventType) {
+  const normalizedType = normalizeEventTypeFilter(eventType);
+
+  if (normalizedType === 'all') {
+    return events;
+  }
+
+  return events.filter(event => normalizeEventType(event.eventType) === normalizedType);
 }
 
 function filterEventsByDayOfWeek(events, dayOfWeek) {

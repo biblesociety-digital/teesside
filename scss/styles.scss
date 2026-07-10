@@ -6854,7 +6854,7 @@ body.filter-panel-open .filter-panel {
 
   .filter-field {
     display: grid;
-    gap: 8px;
+    gap: 0;
   }
 
   .filter-panel label,
@@ -6866,7 +6866,7 @@ body.filter-panel-open .filter-panel {
     font-weight: 500;
     letter-spacing: 0;
     line-height: 20px;
-    margin: 0;
+    margin: 0 0 8px;
   }
 
   .filter-panel .mui-input {
@@ -6887,7 +6887,7 @@ body.filter-panel-open .filter-panel {
 
   .filter-pill-group {
     display: grid;
-    gap: 10px;
+    gap: 0;
   }
 
   .filter-pills {

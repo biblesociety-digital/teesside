@@ -91,6 +91,7 @@ The map displays whatever locations are stored in the configured Firebase Firest
    - Event Title
    - Description
    - Age Group (18+ or Under 18)
+   - Event Type
    - Event Status (Active or Inactive)
    - Start Date
    - End Date (when event is removed)
@@ -143,6 +144,7 @@ locations/{locationId}
 locations/{locationId}/events/{eventId}
   title
   description
+  eventType (bible-conversation or bible-course)
   ageGroup
   startDate
   endDate

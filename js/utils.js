@@ -102,6 +102,11 @@ const TEXT_LIMITS = Object.freeze({
 });
 
 const ATTENDANCE_REPORTS_COLLECTION = 'attendanceReports';
+const DEFAULT_EVENT_TYPE = 'bible-conversation';
+const EVENT_TYPE_OPTIONS = Object.freeze([
+  { value: DEFAULT_EVENT_TYPE, label: 'The Bible Conversation' },
+  { value: 'bible-course', label: 'The Bible Course' }
+]);
 
 function normalizeText(value, maxLength = TEXT_LIMITS.shortText) {
   return String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, maxLength);
@@ -113,6 +118,19 @@ function normalizeLongText(value, maxLength = TEXT_LIMITS.description) {
 
 function normalizeDocumentId(value) {
   return normalizeText(value, TEXT_LIMITS.id).replace(/[\/?#\[\]]/g, '');
+}
+
+function normalizeEventType(value) {
+  const normalizedType = normalizeText(value, TEXT_LIMITS.shortText).toLowerCase();
+  return EVENT_TYPE_OPTIONS.some(option => option.value === normalizedType)
+    ? normalizedType
+    : DEFAULT_EVENT_TYPE;
+}
+
+function getEventTypeLabel(value) {
+  const normalizedType = normalizeEventType(value);
+  const option = EVENT_TYPE_OPTIONS.find(item => item.value === normalizedType);
+  return option ? option.label : 'The Bible Conversation';
 }
 
 function normalizeCoordinate(value) {
@@ -256,6 +274,7 @@ function normalizeEvent(event) {
     id: normalizeDocumentId(event.id),
     title: normalizeText(event.title, TEXT_LIMITS.title),
     description: normalizeLongText(event.description),
+    eventType: normalizeEventType(event.eventType),
     ageGroup: normalizeText(event.ageGroup, TEXT_LIMITS.shortText),
     startDate: normalizeText(event.startDate, 10),
     endDate: normalizeText(event.endDate, 10),
@@ -273,6 +292,7 @@ function getEventPayload(event) {
   return {
     title: normalizedEvent.title,
     description: normalizedEvent.description,
+    eventType: normalizedEvent.eventType,
     ageGroup: normalizedEvent.ageGroup,
     startDate: normalizedEvent.startDate,
     endDate: normalizedEvent.endDate,
