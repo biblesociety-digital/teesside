@@ -12,6 +12,7 @@ let currentLocationSet = [];
 let searchMarker = null;
 let searchRadiusCircle = null;
 let lastSearchCoords = null;
+let lastSearchPostcode = '';
 let eventsData = {};
 let currentTimeOfDayFilter = 'all';
 let currentDayOfWeekFilter = 'all';
@@ -27,7 +28,11 @@ const EVENT_SESSION_COUNT = 4;
 const RECAPTCHA_SITE_KEY_PLACEHOLDER = 'REPLACE_WITH_RECAPTCHA_SITE_KEY';
 let currentTimeframeFilter = DEFAULT_TIMEFRAME_FILTER;
 let currentPageEvents = [];
+let currentResultEvents = [];
 let selectedMapEvent = null;
+let selectedMapLocationId = null;
+let mobileMapCarouselIndex = 0;
+let mobileMapCarouselSignature = '';
 let resultMapModalMap = null;
 let resultMapModalMarker = null;
 let resultMapModalTrigger = null;
@@ -70,8 +75,10 @@ function initializeMap() {
   map = L.map('mapContainer', {
     scrollWheelZoom: false,
     touchZoom: true,
-    zoomControl: true
+    zoomControl: false
   }).setView(center, 11);
+
+  L.control.zoom({ position: 'topright' }).addTo(map);
   
   // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -79,6 +86,8 @@ function initializeMap() {
     maxZoom: 19
   }).addTo(map);
   
+  map.on('click', handleBaseMapClick);
+
   // Add markers for all locations
   addLocationMarkers(visibleLocations);
 }
@@ -108,17 +117,23 @@ function addLocationMarkers(locations = getAllLocations()) {
         title: location.name
       });
       marker.locationId = location.id;
-      marker.bindPopup(createEventCardPopup(location), {
-        className: 'event-card-popup',
+      marker.bindPopup(createLocationPopup(location), {
+        className: 'location-card-popup',
         closeButton: false,
         maxWidth: 340,
-        minWidth: 300,
+        minWidth: 260,
         offset: [0, -18]
       });
 
-      marker.on('click', function() {
-        selectLocationEvent(location.id);
+      marker.on('click', function(event) {
+        if (event.originalEvent) {
+          L.DomEvent.stopPropagation(event.originalEvent);
+        }
+        selectMapLocation(location.id);
+        suppressMobileMapMarkerPopup();
       });
+
+      marker.on('popupopen', suppressMobileMapMarkerPopup);
       
       // Add marker to cluster group
       markerClusterGroup.addLayer(marker);
@@ -158,18 +173,27 @@ function addCloseMatchEventMarkers(events) {
 
     marker.locationId = event.locationId;
     marker.eventKey = getEventKey(event);
-    marker.bindPopup(createSelectedEventPopup(event), {
-      className: 'event-card-popup',
+    marker.bindPopup(createLocationPopup({
+      name: event.locationName,
+      address: event.address,
+      postcode: event.postcode
+    }), {
+      className: 'location-card-popup',
       closeButton: false,
       maxWidth: 340,
-      minWidth: 300,
+      minWidth: 260,
       offset: [0, -18]
     });
 
-    marker.on('click', function() {
-      selectedMapEvent = event;
-      highlightSelectedEventCard();
+    marker.on('click', function(markerEvent) {
+      if (markerEvent.originalEvent) {
+        L.DomEvent.stopPropagation(markerEvent.originalEvent);
+      }
+      selectMapLocation(event.locationId);
+      suppressMobileMapMarkerPopup();
     });
+
+    marker.on('popupopen', suppressMobileMapMarkerPopup);
 
     markerClusterGroup.addLayer(marker);
     markers.push(marker);
@@ -188,24 +212,21 @@ function addCloseMatchEventMarkers(events) {
   map.addLayer(markerClusterGroup);
 }
 
-function createEventCardPopup(location) {
+function createLocationPopup(location) {
   const popup = document.createElement('div');
-  const event = getMapPopupEvent(location);
-
-  if (!event) {
-    return popup;
-  }
-
-  popup.innerHTML = renderEventCard(event, `map-popup-${location.id}`, {
-    compact: true,
-    hideMap: true,
-    hidePopupDetails: true,
-    popupCard: true,
-    selected: true,
-    actionLabel: 'More details'
-  });
+  popup.className = 'location-popup-card';
+  popup.innerHTML = `
+    <h3>${escapeHTML(location?.name || 'Event location')}</h3>
+  `;
 
   return popup;
+}
+
+function formatLocationPopupAddress(location) {
+  return [location?.address, location?.postcode]
+    .map(value => String(value || '').trim())
+    .filter(Boolean)
+    .join(' • ');
 }
 
 function createMarkerLayer() {
@@ -225,13 +246,51 @@ function getAllLocations() {
   return Array.isArray(eventsData.locations) ? eventsData.locations : [];
 }
 
+function formatRadiusSummary(radius) {
+  const miles = Number(radius);
+
+  if (!Number.isFinite(miles)) {
+    return '';
+  }
+
+  const value = Number.isInteger(miles) ? String(miles) : String(miles).replace(/0+$/, '').replace(/\.$/, '');
+  return `${value} ${miles === 1 ? 'mile' : 'miles'}`;
+}
+
+function updateMapResultsSummary() {
+  const overlay = document.getElementById('mapLocationOverlay');
+  const summary = document.getElementById('mapResultsSummary');
+
+  if (!overlay || !summary) {
+    return;
+  }
+
+  const hasSearchResults = document.body.dataset.searchState === 'results' && Boolean(lastSearchPostcode);
+
+  if (!hasSearchResults) {
+    overlay.hidden = true;
+    summary.textContent = '';
+    return;
+  }
+
+  const locationCount = visibleLocations.length;
+  const locationLabel = locationCount === 1 ? 'location' : 'locations';
+  const radiusLabel = formatRadiusSummary(searchRadius);
+  const postcodeLabel = lastSearchPostcode;
+
+  summary.innerHTML = `<span>${escapeHTML(String(locationCount))}</span> ${escapeHTML(locationLabel)} within ${escapeHTML(radiusLabel)} • ${escapeHTML(postcodeLabel)}`;
+  overlay.hidden = false;
+}
+
 function hasValidCoordinates(location) {
   return Number.isFinite(Number(location.latitude)) && Number.isFinite(Number(location.longitude));
 }
 
 function renderLocations(locations) {
+  closeDesktopMapLocationPanel({ clearSelection: true });
   const filteredLocations = applyLocationFilters(locations).filter(locationHasVisibleEvents);
   visibleLocations = filteredLocations;
+  updateMapResultsSummary();
   addLocationMarkers(visibleLocations);
   displayFilteredEvents(getFilteredEvents(visibleLocations));
   refreshMapViewIfVisible();
@@ -306,6 +365,20 @@ function setupEventListeners() {
     eventsList.addEventListener('keydown', handleSearchResultCardSelection);
     eventsList.addEventListener('click', handleEventbriteActionLink);
     eventsList.addEventListener('click', handleMissingEventbriteLink);
+  }
+
+  const mapLocationEventsList = document.getElementById('mapLocationEventsList');
+  if (mapLocationEventsList) {
+    mapLocationEventsList.addEventListener('click', handleEventbriteActionLink);
+    mapLocationEventsList.addEventListener('click', handleMissingEventbriteLink);
+  }
+
+  setupMobileMapResultsCarousel();
+
+  const mapMobileResultsTrack = document.getElementById('mapMobileResultsTrack');
+  if (mapMobileResultsTrack) {
+    mapMobileResultsTrack.addEventListener('click', handleEventbriteActionLink);
+    mapMobileResultsTrack.addEventListener('click', handleMissingEventbriteLink);
   }
 
   const clearEventFilters = document.getElementById('clearEventFilters');
@@ -383,6 +456,189 @@ async function getRecaptchaToken(action = 'postcode_search') {
   });
 }
 
+function isMobileMapResultsView() {
+  return document.body.dataset.resultsView === 'map' &&
+    document.body.dataset.searchState === 'results' &&
+    window.matchMedia('(max-width: 820px)').matches &&
+    Boolean(document.getElementById('mapMobileResultsCarousel'));
+}
+
+function suppressMobileMapMarkerPopup() {
+  if (!map || !isMobileMapResultsView()) {
+    return;
+  }
+
+  map.closePopup();
+  window.setTimeout(() => map.closePopup(), 0);
+}
+
+function focusMobileMapSelectedLocation() {
+  if (!map || !isMobileMapResultsView() || !selectedMapEvent) {
+    return false;
+  }
+
+  const latitude = Number(selectedMapEvent.latitude);
+  const longitude = Number(selectedMapEvent.longitude);
+
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return false;
+  }
+
+  map.setView([latitude, longitude], 12, {
+    animate: true
+  });
+  suppressMobileMapMarkerPopup();
+  return true;
+}
+
+function syncMobileMapSelectedEvent(events) {
+  if (!isMobileMapResultsView() || events.length === 0) {
+    return;
+  }
+
+  const selectedKey = selectedMapEvent ? getEventKey(selectedMapEvent) : '';
+  const selectedIndex = selectedKey
+    ? events.findIndex(event => getEventKey(event) === selectedKey)
+    : -1;
+
+  if (selectedIndex >= 0) {
+    mobileMapCarouselIndex = selectedIndex;
+    selectedMapLocationId = events[selectedIndex].locationId || null;
+    return;
+  }
+
+  mobileMapCarouselIndex = 0;
+  selectedMapEvent = events[0];
+  selectedMapLocationId = events[0]?.locationId || null;
+}
+
+function setMobileMapCarouselSelection(index) {
+  const events = getMobileMapCarouselEvents();
+
+  if (!isMobileMapResultsView() || events.length === 0) {
+    return false;
+  }
+
+  mobileMapCarouselIndex = Math.min(Math.max(index, 0), events.length - 1);
+  selectedMapEvent = events[mobileMapCarouselIndex];
+  selectedMapLocationId = selectedMapEvent?.locationId || null;
+  return true;
+}
+
+function setupMobileMapResultsCarousel() {
+  const prevButton = document.getElementById('mapMobileResultsPrev');
+  const nextButton = document.getElementById('mapMobileResultsNext');
+
+  if (prevButton) {
+    prevButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      goToMobileMapCarouselIndex(mobileMapCarouselIndex - 1);
+    });
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      goToMobileMapCarouselIndex(mobileMapCarouselIndex + 1);
+    });
+  }
+
+  window.addEventListener('resize', renderMobileMapResultsCarousel);
+}
+
+function getMobileMapCarouselEvents() {
+  return Array.isArray(currentResultEvents) ? currentResultEvents : [];
+}
+
+function getMobileMapCarouselSignature(events) {
+  return events.map(getEventKey).join('|');
+}
+
+function getLocationResultsSummary() {
+  const locationCount = visibleLocations.length;
+  const locationLabel = locationCount === 1 ? 'location' : 'locations';
+  const radiusLabel = formatRadiusSummary(searchRadius) || '100 miles';
+  const postcodeLabel = lastSearchPostcode || '';
+
+  return `<strong>${escapeHTML(String(locationCount))}</strong> ${escapeHTML(locationLabel)} within ${escapeHTML(radiusLabel)}${postcodeLabel ? ` • ${escapeHTML(postcodeLabel)}` : ''}`;
+}
+
+function renderMobileMapResultsCarousel() {
+  const carousel = document.getElementById('mapMobileResultsCarousel');
+  const countElement = document.getElementById('mapMobileResultsCount');
+  const addressElement = document.getElementById('mapMobileResultsAddress');
+  const controls = document.getElementById('mapMobileResultsControls');
+  const prevButton = document.getElementById('mapMobileResultsPrev');
+  const nextButton = document.getElementById('mapMobileResultsNext');
+  const track = document.getElementById('mapMobileResultsTrack');
+
+  if (!carousel || !countElement || !addressElement || !controls || !prevButton || !nextButton || !track) {
+    return;
+  }
+
+  if (!isMobileMapResultsView() || !lastSearchPostcode) {
+    carousel.hidden = true;
+    return;
+  }
+
+  const events = getMobileMapCarouselEvents();
+  const signature = getMobileMapCarouselSignature(events);
+
+  if (signature !== mobileMapCarouselSignature) {
+    mobileMapCarouselIndex = 0;
+    mobileMapCarouselSignature = signature;
+  }
+
+  carousel.hidden = false;
+
+  if (events.length === 0) {
+    countElement.innerHTML = getLocationResultsSummary();
+    addressElement.textContent = '';
+    controls.hidden = true;
+    track.innerHTML = '';
+    track.style.transform = 'translateX(0)';
+    return;
+  }
+
+  syncMobileMapSelectedEvent(events);
+  mobileMapCarouselIndex = Math.min(Math.max(mobileMapCarouselIndex, 0), events.length - 1);
+  const currentEvent = events[mobileMapCarouselIndex];
+  const distanceLabel = formatDistanceLabel(currentEvent?.matchDistance);
+  const countLabel = `${mobileMapCarouselIndex + 1} of ${events.length} ${events.length === 1 ? 'event' : 'events'}`;
+
+  countElement.innerHTML = `<span class="map-mobile-results-count-value">${escapeHTML(countLabel)}</span>${distanceLabel ? ` • ${escapeHTML(distanceLabel)}` : ''}`;
+  addressElement.textContent = getEventAddressLine(currentEvent);
+  controls.hidden = events.length <= 1;
+  prevButton.disabled = mobileMapCarouselIndex === 0;
+  nextButton.disabled = mobileMapCarouselIndex === events.length - 1;
+
+  track.innerHTML = events
+    .map((event, index) => `
+      <div class="map-mobile-results-slide" aria-hidden="${index === mobileMapCarouselIndex ? 'false' : 'true'}">
+        ${renderEventCard(event, `mobile-map-${index}`, {
+          hideDistanceChip: true,
+          hideLocation: true,
+          locationAfterDescription: true,
+          showEventTypeChip: true,
+          stackMeta: true
+        })}
+      </div>
+    `)
+    .join('');
+
+  track.style.transform = `translateX(-${mobileMapCarouselIndex * 100}%)`;
+  highlightSelectedEventCard();
+  focusMobileMapSelectedLocation();
+}
+
+function goToMobileMapCarouselIndex(index) {
+  if (!setMobileMapCarouselSelection(index)) {
+    return;
+  }
+
+  renderMobileMapResultsCarousel();
+}
+
 function setupAgeConfirmationGate() {
   const ageConfirmation = document.getElementById('ageConfirmation');
   const postcodeSearchButton = document.getElementById('postcodeSearchButton');
@@ -433,9 +689,13 @@ function setResultsView(view, options = {}) {
 
   if (selectedView === 'map') {
     window.setTimeout(refreshMapView, 0);
+    syncDesktopMapLocationPanel();
+    renderMobileMapResultsCarousel();
     highlightSelectedEventCard();
     return;
   }
+
+  closeDesktopMapLocationPanel({ clearSelection: true });
 
   window.setTimeout(() => {
     renderVisibleEventCardMaps();
@@ -469,6 +729,10 @@ function refreshMapView() {
   }
 
   map.invalidateSize();
+
+  if (focusMobileMapSelectedLocation()) {
+    return;
+  }
 
   if (searchRadiusCircle) {
     map.fitBounds(searchRadiusCircle.getBounds(), {
@@ -730,6 +994,7 @@ async function searchByPostcode(options = {}) {
     return;
   }
   lastSearchCoords = coords;
+  lastSearchPostcode = postcode.toUpperCase();
   
   // Find locations within radius
   const nearbyLocations = findNearbyLocations(coords.lat, coords.lon, searchRadius);
@@ -981,6 +1246,8 @@ function displayFilteredEvents(events) {
     closeMatchMessage = 'There are no current events with those filters but here are some other events that are a close match';
   }
 
+  currentResultEvents = displayEvents;
+
   const paged = getPagedEvents(displayEvents);
   currentPageEvents = paged.pageEvents;
   updateEventCount(events.length === 0 ? 0 : paged.totalCount);
@@ -988,9 +1255,12 @@ function displayFilteredEvents(events) {
   if (paged.totalCount === 0) {
     eventsList.innerHTML = '<p class="empty-state">No upcoming active events found with current filters.</p>';
     currentPageEvents = [];
+    currentResultEvents = [];
     selectedMapEvent = null;
+    closeDesktopMapLocationPanel({ clearSelection: true });
     removeSelectedEventMarker();
     renderPagination(0, 1, 0, 0, 0);
+    renderMobileMapResultsCarousel();
     return;
   }
   
@@ -1003,11 +1273,18 @@ function displayFilteredEvents(events) {
   }
 
   eventsList.innerHTML = closeMatchMarkup + paged.pageEvents
-    .map((event, index) => renderEventCard(event, index))
+    .map((event, index) => renderEventCard(event, index, {
+      hideDistanceChip: true,
+      locationAfterDescription: true,
+      showEventTypeChip: true,
+      stackMeta: true
+    }))
     .join('');
 
   renderPagination(paged.totalPages, currentPage, paged.totalCount, paged.startIndex, paged.endIndex);
+  renderMobileMapResultsCarousel();
   clearInvalidSelectedMapEvent();
+  syncDesktopMapLocationPanel();
   highlightSelectedEventCard();
   window.setTimeout(renderVisibleEventCardMaps, 0);
   refreshMapViewIfVisible();
@@ -1025,29 +1302,40 @@ function renderEventCard(event, index, options = {}) {
   const popupCardClass = options.popupCard ? ' map-popup-card' : '';
   const description = event.description || 'Join a relaxed chat over coffee. Come and go as your time allows.';
   const distanceLabel = formatDistanceLabel(event.matchDistance);
-  const distanceMarkup = !options.hidePopupDetails && distanceLabel
+  const eventType = normalizeEventType(event.eventType);
+  const eventTypeLabel = getEventTypeLabel(eventType);
+  const topChipMarkup = options.showEventTypeChip
     ? `
+      <span class="event-card-chip event-card-type-chip event-card-type-chip-${escapeAttribute(eventType)} event-card-meta-item">
+        <span class="event-card-meta-text">${escapeHTML(eventTypeLabel)}</span>
+      </span>`
+    : (!options.hideDistanceChip && !options.hidePopupDetails && distanceLabel
+      ? `
       <span class="event-card-chip event-card-distance-chip event-card-meta-item">
         <img src="img/icon-miles-away.svg" alt="" aria-hidden="true">
         <span class="event-card-meta-text">${escapeHTML(distanceLabel)}</span>
       </span>`
-    : '';
+      : '');
   const mapLinkMarkup = !options.hidePopupDetails && hasValidCoordinates(event)
     ? ` <span class="event-card-address-separator" aria-hidden="true">•</span> <span class="event-card-map-modal-link" role="link" tabindex="0" data-event-key="${escapeAttribute(eventKey)}">view map</span>`
     : '';
-  const detailsMarkup = options.hidePopupDetails ? '' : `
+  const locationMarkup = options.hideLocation ? '' : `
       <p class="event-card-address event-card-meta-item">
         <img src="img/icon-location.svg" alt="" aria-hidden="true">
         <span class="event-card-meta-text">${escapeHTML(getEventAddressLine(event))}${mapLinkMarkup}</span>
-      </p>
+      </p>`;
+  const descriptionMarkup = `
       <p class="event-card-description">${escapeHTML(description)}</p>`;
+  const detailsMarkup = options.hidePopupDetails ? '' : (options.locationAfterDescription
+    ? `${descriptionMarkup}${locationMarkup}`
+    : `${locationMarkup}${descriptionMarkup}`);
   const actionMarkup = options.hidePopupDetails ? '' : `
       <span class="event-link">${escapeHTML(actionLabel)}</span>`;
 
   return `
-    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}${popupCardClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">${distanceMarkup}
+    <a class="event-card event-card-link search-result-card${selectedClass}${compactClass}${popupCardClass}" href="${escapeAttribute(cardUrl)}"${cardTarget} data-event-key="${escapeAttribute(eventKey)}" aria-label="${cardLabel} ${escapeAttribute(event.title || 'event')}">${topChipMarkup}
       <h3>${escapeHTML(event.title || 'Bible Conversation')}</h3>${detailsMarkup}
-      <div class="event-card-meta-row">
+      <div class="event-card-meta-row${options.stackMeta ? ' event-card-meta-row-stacked' : ''}">
         <span class="event-card-chip event-card-date-chip event-card-meta-item">
           <img src="img/icon-date.svg" alt="" aria-hidden="true">
           <span class="event-card-meta-text">${escapeHTML(formatResultDateChip(event))}</span>
@@ -1106,7 +1394,19 @@ function formatCardTime(timeString) {
 }
 
 function getEventAddressLine(event) {
-  return event.address || event.locationName || event.postcode || 'Address TBC';
+  const addressLine = [event?.locationName, event?.address, event?.postcode]
+    .map(value => String(value || '').trim())
+    .filter(Boolean)
+    .join(' • ');
+
+  return addressLine || 'Address TBC';
+}
+
+function getPanelLocationAddress(location, event) {
+  return [location?.name || event?.locationName, location?.address || event?.address, location?.postcode || event?.postcode]
+    .map(value => String(value || '').trim())
+    .filter(Boolean)
+    .join(' • ');
 }
 
 function formatDistanceLabel(distance) {
@@ -1506,31 +1806,167 @@ function clearInvalidSelectedMapEvent() {
   removeSelectedEventMarker();
 }
 
-function selectLocationEvent(locationId) {
-  const location = visibleLocations.find(l => l.id === locationId);
+function selectMapLocation(locationId) {
+  const locationEvents = getEventsForLocation(locationId);
+  selectedMapLocationId = locationId;
+  selectedMapEvent = locationEvents[0] || null;
 
-  if (!location) {
-    return;
+  if (isDesktopMapResultsView()) {
+    openDesktopMapLocationPanel(locationId);
+  } else if (isMobileMapResultsView()) {
+    const selectedIndex = getMobileMapCarouselEvents().findIndex(event => event.locationId === locationId);
+    if (selectedIndex >= 0) {
+      setMobileMapCarouselSelection(selectedIndex);
+      renderMobileMapResultsCarousel();
+    }
+    suppressMobileMapMarkerPopup();
   }
 
-  const event = getMapPopupEvent(location);
-
-  if (!event) {
-    return;
-  }
-
-  selectedMapEvent = event;
-  focusEventOnMap(event);
-  scrollSelectedEventCardIntoView();
   highlightSelectedEventCard();
 }
 
-function getMapPopupEvent(location) {
-  const locationEvents = getFilteredEvents([location]);
+function getEventsForLocation(locationId) {
+  const matchingEvents = currentResultEvents.filter(event => event.locationId === locationId);
 
-  return locationEvents.find(candidate => {
-    return currentPageEvents.some(pageEvent => getEventKey(pageEvent) === getEventKey(candidate));
-  }) || locationEvents[0] || null;
+  if (matchingEvents.length > 0) {
+    return matchingEvents;
+  }
+
+  const location = visibleLocations.find(candidate => candidate.id === locationId);
+  return location ? getFilteredEvents([location]) : [];
+}
+
+function getMapSelectionLocation(locationId) {
+  return visibleLocations.find(candidate => candidate.id === locationId) ||
+    currentResultEvents.find(event => event.locationId === locationId) ||
+    null;
+}
+
+function panMapToSelectedLocation(locationId) {
+  if (!map || typeof L === 'undefined' || !isDesktopMapResultsView()) {
+    return;
+  }
+
+  const location = getMapSelectionLocation(locationId);
+  const panel = document.getElementById('mapLocationEventsPanel');
+  const mapContainer = map.getContainer();
+  const latitude = Number(location?.latitude);
+  const longitude = Number(location?.longitude);
+
+  if (!panel || !mapContainer || !Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+    return;
+  }
+
+  const mapWidth = mapContainer.getBoundingClientRect().width;
+  const panelWidth = Math.min(panel.getBoundingClientRect().width || 0, mapWidth * 0.5);
+  const zoom = map.getZoom();
+  const selectedPoint = map.project([latitude, longitude], zoom);
+  const adjustedCenterPoint = selectedPoint.subtract([panelWidth / 2, 0]);
+
+  map.panTo(map.unproject(adjustedCenterPoint, zoom), {
+    animate: true
+  });
+}
+
+function isDesktopMapResultsView() {
+  return document.body.dataset.resultsView === 'map' &&
+    window.matchMedia('(min-width: 821px)').matches &&
+    Boolean(document.getElementById('mapLocationEventsPanel'));
+}
+
+function handleBaseMapClick() {
+  if (!isDesktopMapResultsView()) {
+    return;
+  }
+
+  closeDesktopMapLocationPanel({ clearSelection: true });
+}
+
+function openDesktopMapLocationPanel(locationId) {
+  const panel = document.getElementById('mapLocationEventsPanel');
+  const mapSection = document.querySelector('.map-section[data-results-view-panel="map"]');
+
+  if (!panel || !mapSection) {
+    return;
+  }
+
+  renderDesktopMapLocationPanel(locationId);
+  panel.hidden = false;
+  window.requestAnimationFrame(() => {
+    mapSection.classList.add('is-location-panel-open');
+    panMapToSelectedLocation(locationId);
+  });
+}
+
+function closeDesktopMapLocationPanel(options = {}) {
+  const panel = document.getElementById('mapLocationEventsPanel');
+  const mapSection = document.querySelector('.map-section[data-results-view-panel="map"]');
+
+  if (options.clearSelection) {
+    selectedMapLocationId = null;
+    selectedMapEvent = null;
+    if (map) {
+      map.closePopup();
+    }
+    highlightSelectedEventCard();
+  }
+
+  if (!panel || !mapSection) {
+    return;
+  }
+
+  mapSection.classList.remove('is-location-panel-open');
+  window.setTimeout(() => {
+    if (!mapSection.classList.contains('is-location-panel-open')) {
+      panel.hidden = true;
+    }
+  }, 260);
+}
+
+function syncDesktopMapLocationPanel() {
+  if (!selectedMapLocationId || !isDesktopMapResultsView()) {
+    closeDesktopMapLocationPanel({ clearSelection: false });
+    return;
+  }
+
+  openDesktopMapLocationPanel(selectedMapLocationId);
+}
+
+function renderDesktopMapLocationPanel(locationId) {
+  const summary = document.getElementById('mapLocationEventsSummary');
+  const list = document.getElementById('mapLocationEventsList');
+  const locationEvents = getEventsForLocation(locationId);
+  const location = getMapSelectionLocation(locationId);
+  const locationName = location?.name || locationEvents[0]?.locationName || 'Selected location';
+  const locationAddress = getPanelLocationAddress(location, locationEvents[0]);
+  const distanceLabel = formatDistanceLabel(locationEvents[0]?.matchDistance);
+  const eventCountLabel = `${locationEvents.length} ${locationEvents.length === 1 ? 'event' : 'events'}`;
+
+  if (!list) {
+    return;
+  }
+
+  if (summary) {
+    const summaryParts = [eventCountLabel, distanceLabel].filter(Boolean).join(' • ');
+    summary.innerHTML = `
+      <span>${escapeHTML(summaryParts)}</span>
+      <span class="map-location-events-address">${escapeHTML(locationAddress || locationName)}</span>
+    `;
+  }
+
+  if (locationEvents.length === 0) {
+    list.innerHTML = '<p class="empty-state">No events found for this location.</p>';
+    return;
+  }
+
+  list.innerHTML = locationEvents
+    .map((event, index) => renderEventCard(event, `location-panel-${index}`, {
+      hideDistanceChip: true,
+      hideLocation: true,
+      showEventTypeChip: true,
+      stackMeta: true
+    }))
+    .join('');
 }
 
 function isMobileLandingView() {

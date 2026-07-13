@@ -259,6 +259,34 @@
       </aside>
 
       <div class="map-section results-view-panel" data-results-view-panel="map">
+        <div class="map-location-overlay" id="mapLocationOverlay" hidden>
+          <p class="map-results-summary" id="mapResultsSummary"></p>
+          <div class="map-location-panel-viewport">
+            <aside class="map-location-events-panel" id="mapLocationEventsPanel" aria-live="polite" hidden>
+              <p class="map-location-events-summary" id="mapLocationEventsSummary"></p>
+              <div id="mapLocationEventsList" class="map-location-events-list"></div>
+            </aside>
+          </div>
+          <section class="map-mobile-results-carousel" id="mapMobileResultsCarousel" aria-label="Map results" aria-live="polite" hidden>
+            <div class="map-mobile-results-header">
+              <div class="map-mobile-results-copy">
+                <p class="map-mobile-results-count" id="mapMobileResultsCount"></p>
+                <p class="map-mobile-results-address" id="mapMobileResultsAddress"></p>
+              </div>
+              <div class="map-mobile-results-controls" id="mapMobileResultsControls" hidden>
+                <button class="map-mobile-results-nav" type="button" id="mapMobileResultsPrev" aria-label="Previous event">
+                  <span class="map-mobile-results-chevron map-mobile-results-chevron-left" aria-hidden="true"></span>
+                </button>
+                <button class="map-mobile-results-nav" type="button" id="mapMobileResultsNext" aria-label="Next event">
+                  <span class="map-mobile-results-chevron map-mobile-results-chevron-right" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="map-mobile-results-viewport">
+              <div class="map-mobile-results-track" id="mapMobileResultsTrack"></div>
+            </div>
+          </section>
+        </div>
         <div id="mapContainer"></div>
       </div>
 
