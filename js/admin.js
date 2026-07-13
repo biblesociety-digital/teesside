@@ -1137,6 +1137,7 @@ async function addEvent() {
 
   const locationId = document.getElementById('evtLocation').value;
   const title = document.getElementById('evtTitle').value.trim();
+  const eventType = normalizeEventType(document.getElementById('evtEventType')?.value);
   const description = document.getElementById('evtDescription').value.trim();
   const status = document.getElementById('evtStatus').value;
   const startDate = document.getElementById('evtStartDate').value;
@@ -1171,6 +1172,7 @@ async function addEvent() {
     id: generateId('evt'),
     title: title,
     description: description,
+    eventType: eventType,
     ageGroup: '',
     startDate: startDate,
     endDate: endDate,
@@ -1203,6 +1205,7 @@ async function addEvent() {
       // Clear form, keeping the selected location to make adding another event quick.
       document.getElementById('evtLocation').value = locationId;
       document.getElementById('evtTitle').value = '';
+      document.getElementById('evtEventType').value = DEFAULT_EVENT_TYPE;
       document.getElementById('evtDescription').value = '';
       document.getElementById('evtStartDate').value = '';
       document.getElementById('evtEndDate').value = '';
@@ -1531,6 +1534,7 @@ function editEvent(locationId, eventId) {
     currentEditEventId = eventId;
     
     document.getElementById('editEvtTitle').value = normalizedEvent.title;
+    setSelectValue('editEvtEventType', normalizedEvent.eventType);
     document.getElementById('editEvtDescription').value = normalizedEvent.description;
     setSelectValue('editEvtStatus', normalizedEvent.status);
     document.getElementById('editEvtStartDate').value = normalizedEvent.startDate;
@@ -1545,6 +1549,7 @@ function editEvent(locationId, eventId) {
 
 async function saveEventEdit() {
   const title = document.getElementById('editEvtTitle').value.trim();
+  const eventType = normalizeEventType(document.getElementById('editEvtEventType')?.value);
   const description = document.getElementById('editEvtDescription').value.trim();
   const status = document.getElementById('editEvtStatus').value;
   const startDate = document.getElementById('editEvtStartDate').value;
@@ -1574,6 +1579,7 @@ async function saveEventEdit() {
   if (event) {
     event.title = title;
     event.description = description;
+    event.eventType = eventType;
     event.ageGroup = '';
     event.startDate = startDate;
     event.endDate = endDate;

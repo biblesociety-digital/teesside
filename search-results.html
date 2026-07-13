@@ -81,7 +81,7 @@
   <!-- End Google Tag Manager -->
 </head>
 
-<body class="site-page home-page experience-page landing-page" data-results-view="list" data-search-state="initial">
+<body class="site-page home-page experience-page landing-page search-results-page" data-results-view="list" data-search-state="initial">
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe
@@ -158,8 +158,16 @@
           <input class="mui-input" type="text" id="postcodeInput" placeholder="e.g. NE99 1AR" autocomplete="postal-code">
         </div>
         <div class="form-group">
+          <label for="eventTypeInput">Event type</label>
+          <select class="mui-input" id="eventTypeInput" name="eventType">
+            <option value="all" selected>All events</option>
+            <option value="bible-conversation">The Bible Conversation</option>
+            <option value="bible-course">The Bible Course</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="radiusInput">Search radius (miles)</label>
-          <select class="mui-input" id="radiusInput">
+          <select class="mui-input" id="radiusInput" name="radius">
             <option value="0.25" selected>Just this area</option>
             <option value="0.5">0.5 miles</option>
             <option value="1">1 mile</option>
@@ -218,7 +226,16 @@
           </div>
 
           <fieldset class="filter-pill-group">
-            <legend>Start date</legend>
+            <legend>Event type</legend>
+            <div class="filter-pills">
+              <button class="filter-pill active" type="button" data-filter-target="eventType" data-filter-value="all">All events</button>
+              <button class="filter-pill" type="button" data-filter-target="eventType" data-filter-value="bible-conversation">The Bible Conversation</button>
+              <button class="filter-pill" type="button" data-filter-target="eventType" data-filter-value="bible-course">The Bible Course</button>
+            </div>
+          </fieldset>
+
+          <fieldset class="filter-pill-group">
+            <legend>Day of week</legend>
             <div class="filter-pills">
               <button class="filter-pill active" type="button" data-filter-target="dayOfWeek" data-filter-value="all">Any day</button>
               <button class="filter-pill" type="button" data-filter-target="dayOfWeek" data-filter-value="monday">Monday</button>
@@ -250,6 +267,34 @@
       </aside>
 
       <div class="map-section results-view-panel" data-results-view-panel="map">
+        <div class="map-location-overlay" id="mapLocationOverlay" hidden>
+          <div class="map-results-summary" id="mapResultsSummary"></div>
+          <div class="map-location-panel-viewport">
+            <aside class="map-location-events-panel" id="mapLocationEventsPanel" aria-live="polite" hidden>
+              <p class="map-location-events-summary" id="mapLocationEventsSummary"></p>
+              <div id="mapLocationEventsList" class="map-location-events-list"></div>
+            </aside>
+          </div>
+          <section class="map-mobile-results-carousel" id="mapMobileResultsCarousel" aria-label="Map results" aria-live="polite" hidden>
+            <div class="map-mobile-results-header">
+              <div class="map-mobile-results-copy">
+                <p class="map-mobile-results-count" id="mapMobileResultsCount"></p>
+                <p class="map-mobile-results-address" id="mapMobileResultsAddress"></p>
+              </div>
+              <div class="map-mobile-results-controls" id="mapMobileResultsControls" hidden>
+                <button class="map-mobile-results-nav" type="button" id="mapMobileResultsPrev" aria-label="Previous event">
+                  <span class="map-mobile-results-chevron map-mobile-results-chevron-left" aria-hidden="true"></span>
+                </button>
+                <button class="map-mobile-results-nav" type="button" id="mapMobileResultsNext" aria-label="Next event">
+                  <span class="map-mobile-results-chevron map-mobile-results-chevron-right" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="map-mobile-results-viewport">
+              <div class="map-mobile-results-track" id="mapMobileResultsTrack"></div>
+            </div>
+          </section>
+        </div>
         <div id="mapContainer"></div>
       </div>
 

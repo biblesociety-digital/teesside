@@ -57,6 +57,7 @@ function renderEventDetail(container, location, event) {
       <p class="detail-description">${escapeHTML(event.description || 'No description has been added yet.')}</p>
 
       <div class="detail-grid">
+        ${renderDetailItem('Type', getEventTypeLabel(event.eventType))}
         ${renderDetailItem('Start date', formatDate(event.startDate))}
         ${renderDetailItem('End date', formatDate(event.endDate))}
         ${renderDetailItem('Day', event.dayOfWeek || 'Day TBC')}

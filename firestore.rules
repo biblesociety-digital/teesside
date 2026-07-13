@@ -87,9 +87,11 @@ service cloud.firestore {
     }
 
     function isValidEvent() {
-      return hasOnlyKeys(['title', 'description', 'ageGroup', 'startDate', 'endDate', 'dayOfWeek', 'time', 'eventbriteUrl', 'active', 'status']) &&
+      return hasOnlyKeys(['title', 'description', 'eventType', 'ageGroup', 'startDate', 'endDate', 'dayOfWeek', 'time', 'eventbriteUrl', 'active', 'status']) &&
         isRequiredString('title', 120) &&
         isOptionalString('description', 1200) &&
+        isOptionalString('eventType', 160) &&
+        (!('eventType' in request.resource.data) || request.resource.data.eventType in ['bible-conversation', 'bible-course']) &&
         isOptionalString('ageGroup', 160) &&
         isValidDateString('startDate') &&
         isValidDateString('endDate') &&
