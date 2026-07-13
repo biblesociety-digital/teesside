@@ -81,7 +81,7 @@
   <!-- End Google Tag Manager -->
 </head>
 
-<body class="site-page home-page experience-page landing-page" data-results-view="list" data-search-state="initial">
+<body class="site-page home-page experience-page landing-page search-results-page" data-results-view="list" data-search-state="initial">
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe
@@ -158,8 +158,16 @@
           <input class="mui-input" type="text" id="postcodeInput" placeholder="e.g. NE99 1AR" autocomplete="postal-code">
         </div>
         <div class="form-group">
+          <label for="eventTypeInput">Event type</label>
+          <select class="mui-input" id="eventTypeInput" name="eventType">
+            <option value="all" selected>All events</option>
+            <option value="bible-conversation">The Bible Conversation</option>
+            <option value="bible-course">The Bible Course</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="radiusInput">Search radius (miles)</label>
-          <select class="mui-input" id="radiusInput">
+          <select class="mui-input" id="radiusInput" name="radius">
             <option value="0.25" selected>Just this area</option>
             <option value="0.5">0.5 miles</option>
             <option value="1">1 mile</option>
@@ -260,7 +268,7 @@
 
       <div class="map-section results-view-panel" data-results-view-panel="map">
         <div class="map-location-overlay" id="mapLocationOverlay" hidden>
-          <p class="map-results-summary" id="mapResultsSummary"></p>
+          <div class="map-results-summary" id="mapResultsSummary"></div>
           <div class="map-location-panel-viewport">
             <aside class="map-location-events-panel" id="mapLocationEventsPanel" aria-live="polite" hidden>
               <p class="map-location-events-summary" id="mapLocationEventsSummary"></p>
