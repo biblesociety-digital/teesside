@@ -17,6 +17,7 @@ let eventsData = {};
 let currentTimeOfDayFilter = 'all';
 let currentDayOfWeekFilter = 'all';
 let currentEventTypeFilter = 'all';
+let currentSortOrder = 'distance-closest';
 let currentPage = 1;
 let searchRadius = 0.25;
 let lastTotalEventCount = 0;
@@ -334,6 +335,7 @@ function setupEventListeners() {
   setupFilterPills();
   setupResultsViewToggle();
   setupFilterPanel();
+  setupSortMenu();
   setupResultMapModal();
   setupAgeConfirmationGate();
 
@@ -755,6 +757,78 @@ function setupAgeConfirmationGate() {
   syncSearchAvailability();
 }
 
+function setupSortMenu() {
+  const sortButton = document.getElementById('sortResultsButton');
+  const sortMenu = document.getElementById('sortResultsMenu');
+
+  if (!sortButton || !sortMenu) {
+    return;
+  }
+
+  function closeSortMenu() {
+    sortMenu.hidden = true;
+    sortButton.setAttribute('aria-expanded', 'false');
+  }
+
+  function openSortMenu() {
+    sortMenu.hidden = false;
+    sortButton.setAttribute('aria-expanded', 'true');
+  }
+
+  sortButton.addEventListener('click', function(event) {
+    event.stopPropagation();
+    if (sortMenu.hidden) {
+      openSortMenu();
+      return;
+    }
+
+    closeSortMenu();
+  });
+
+  sortMenu.addEventListener('click', function(event) {
+    const item = event.target.closest('[data-sort-value]');
+
+    if (!item) {
+      return;
+    }
+
+    currentSortOrder = normalizeSortOrder(item.dataset.sortValue);
+    syncSortMenuState();
+    closeSortMenu();
+    currentPage = 1;
+    displayFilteredEvents(getFilteredEvents(visibleLocations));
+  });
+
+  document.addEventListener('click', function(event) {
+    if (sortMenu.hidden || sortMenu.contains(event.target) || sortButton.contains(event.target)) {
+      return;
+    }
+
+    closeSortMenu();
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && !sortMenu.hidden) {
+      closeSortMenu();
+      sortButton.focus();
+    }
+  });
+
+  syncSortMenuState();
+}
+
+function syncSortMenuState() {
+  document.querySelectorAll('[data-sort-value]').forEach(item => {
+    const isActive = normalizeSortOrder(item.dataset.sortValue) === currentSortOrder;
+    item.classList.toggle('active', isActive);
+    item.setAttribute('aria-checked', String(isActive));
+  });
+}
+
+function normalizeSortOrder(value) {
+  return ['distance-closest', 'distance-furthest', 'date-earliest', 'date-latest'].includes(value) ? value : 'distance-closest';
+}
+
 function setupResultsViewToggle() {
   const viewButtons = document.querySelectorAll('[data-results-view-button]');
 
@@ -773,6 +847,19 @@ function setResultsView(view, options = {}) {
     setLandingSearchState('results');
   }
   document.body.dataset.resultsView = selectedView;
+
+  if (selectedView === 'map') {
+    const sortMenu = document.getElementById('sortResultsMenu');
+    const sortButton = document.getElementById('sortResultsButton');
+
+    if (sortMenu) {
+      sortMenu.hidden = true;
+    }
+
+    if (sortButton) {
+      sortButton.setAttribute('aria-expanded', 'false');
+    }
+  }
 
   document.querySelectorAll('[data-results-view-button]').forEach(button => {
     const isActive = button.dataset.resultsViewButton === selectedView;
@@ -1350,6 +1437,29 @@ function sortEventsByDate(events) {
   });
 }
 
+function sortEventsForList(events) {
+  const sortedEvents = [...events];
+
+  if (currentSortOrder === 'distance-closest' || currentSortOrder === 'distance-furthest') {
+    return sortedEvents.sort((a, b) => {
+      const distanceA = Number.isFinite(a.matchDistance) ? a.matchDistance : Number.POSITIVE_INFINITY;
+      const distanceB = Number.isFinite(b.matchDistance) ? b.matchDistance : Number.POSITIVE_INFINITY;
+      const distanceCompare = currentSortOrder === 'distance-furthest'
+        ? distanceB - distanceA
+        : distanceA - distanceB;
+      return distanceCompare !== 0 ? distanceCompare : getEventSortValue(a).localeCompare(getEventSortValue(b));
+    });
+  }
+
+  if (currentSortOrder === 'date-latest') {
+    return sortedEvents.sort((a, b) => {
+      return getEventSortValue(b).localeCompare(getEventSortValue(a));
+    });
+  }
+
+  return sortEventsByDate(sortedEvents);
+}
+
 function getEventSortValue(event) {
   return `${event.nextOccurrenceDate || event.startDate || '9999-12-31'} ${event.time || '23:59'} ${event.title || ''}`;
 }
@@ -1365,6 +1475,7 @@ function displayFilteredEvents(events) {
     closeMatchMessage = 'There are no current events with those filters but here are some other events that are a close match';
   }
 
+  displayEvents = sortEventsForList(displayEvents);
   currentResultEvents = displayEvents;
 
   const paged = getPagedEvents(displayEvents);
@@ -2347,7 +2458,9 @@ function clearSearch(options = {}) {
   currentEventTypeFilter = 'all';
   currentTimeOfDayFilter = 'all';
   currentDayOfWeekFilter = 'all';
+  currentSortOrder = 'distance-closest';
   syncFilterControls();
+  syncSortMenuState();
 
   currentLocationSet = getAllLocations();
   visibleLocations = currentLocationSet;

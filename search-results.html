@@ -133,10 +133,30 @@
           <img src="img/icon-search-filter.svg" alt="" aria-hidden="true">
           <span>Filter</span>
         </button>
-        <button class="result-action-button search-results-nav-button" type="button" id="sortResultsButton">
-          <img src="img/icon-search-sort.svg" alt="" aria-hidden="true">
-          <span>Sort</span>
-        </button>
+        <div class="sort-menu-wrap">
+          <button class="result-action-button search-results-nav-button" type="button" id="sortResultsButton" aria-expanded="false" aria-haspopup="true" aria-controls="sortResultsMenu">
+            <img src="img/icon-search-sort.svg" alt="" aria-hidden="true">
+            <span>Sort</span>
+          </button>
+          <div class="sort-menu" id="sortResultsMenu" role="menu" aria-label="Sort list results" hidden>
+            <button class="sort-menu-item active" type="button" role="menuitemradio" aria-checked="true" data-sort-value="distance-closest">
+              <span>By distance - closest</span>
+              <span class="sort-menu-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none" aria-hidden="true" focusable="false"><path d="M5.59807 13L0 7.06974L1.83866 5.08493L5.59807 9.08629L14.1613 0L16 1.95671L5.59807 13Z" fill="#004FB2"/></svg></span>
+            </button>
+            <button class="sort-menu-item" type="button" role="menuitemradio" aria-checked="false" data-sort-value="distance-furthest">
+              <span>By distance - furthest</span>
+              <span class="sort-menu-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none" aria-hidden="true" focusable="false"><path d="M5.59807 13L0 7.06974L1.83866 5.08493L5.59807 9.08629L14.1613 0L16 1.95671L5.59807 13Z" fill="#004FB2"/></svg></span>
+            </button>
+            <button class="sort-menu-item" type="button" role="menuitemradio" aria-checked="false" data-sort-value="date-earliest">
+              <span>By date - earliest</span>
+              <span class="sort-menu-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none" aria-hidden="true" focusable="false"><path d="M5.59807 13L0 7.06974L1.83866 5.08493L5.59807 9.08629L14.1613 0L16 1.95671L5.59807 13Z" fill="#004FB2"/></svg></span>
+            </button>
+            <button class="sort-menu-item" type="button" role="menuitemradio" aria-checked="false" data-sort-value="date-latest">
+              <span>By date - latest</span>
+              <span class="sort-menu-check"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="13" viewBox="0 0 16 13" fill="none" aria-hidden="true" focusable="false"><path d="M5.59807 13L0 7.06974L1.83866 5.08493L5.59807 9.08629L14.1613 0L16 1.95671L5.59807 13Z" fill="#004FB2"/></svg></span>
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
   </header>
