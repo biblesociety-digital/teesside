@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data: https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com; frame-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com; child-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com;">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; img-src 'self' data: https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; script-src 'self' https://cdnjs.cloudflare.com https://www.gstatic.com; connect-src 'self' https://api.postcodes.io https://*.googleapis.com https://*.firebaseio.com https://*.gstatic.com; frame-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com; child-src 'self' https://bible-conversations.firebaseapp.com https://*.firebaseapp.com https://accounts.google.com;">
   <title>Admin Panel - bibleconversations.co.uk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,18 +135,12 @@
                 <input class="mui-input" type="text" id="locName" placeholder="e.g., St. John's Church" />
               </div>
               <div class="form-group">
+                <label for="locPostcode">Postcode</label>
+                <input class="mui-input" type="text" id="locPostcode" placeholder="e.g., SW1A 1AA" autocomplete="postal-code" />
+              </div>
+              <div class="form-group">
                 <label for="locAddress">Address</label>
                 <input class="mui-input" type="text" id="locAddress" placeholder="Full address" />
-              </div>
-              <div class="admin-form-grid two">
-                <div class="form-group">
-                  <label for="locPostcode">Postcode</label>
-                  <input class="mui-input" type="text" id="locPostcode" placeholder="e.g., SW1A 1AA" />
-                </div>
-                <div class="form-group">
-                  <label for="locContact">Contact Number</label>
-                  <input class="mui-input" type="text" id="locContact" placeholder="01642 123456" />
-                </div>
               </div>
 
               <div class="form-group">
@@ -305,18 +299,12 @@
           <input class="mui-input" type="text" id="editLocName" />
         </div>
         <div class="form-group">
+          <label for="editLocPostcode">Postcode</label>
+          <input class="mui-input" type="text" id="editLocPostcode" autocomplete="postal-code" />
+        </div>
+        <div class="form-group">
           <label for="editLocAddress">Address</label>
           <input class="mui-input" type="text" id="editLocAddress" />
-        </div>
-        <div class="admin-form-grid two">
-          <div class="form-group">
-            <label for="editLocPostcode">Postcode</label>
-            <input class="mui-input" type="text" id="editLocPostcode" />
-          </div>
-          <div class="form-group">
-            <label for="editLocContact">Contact Number</label>
-            <input class="mui-input" type="text" id="editLocContact" />
-          </div>
         </div>
         <div class="form-group">
           <label>Set Location on Map</label>

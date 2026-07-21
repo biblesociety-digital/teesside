@@ -69,7 +69,6 @@ function renderEventDetail(container, location, event) {
         <h3>${escapeHTML(location.name || 'Location')}</h3>
         <p>${escapeHTML(location.address || 'Address not set')}</p>
         <p>${escapeHTML(location.postcode || 'Postcode not set')}</p>
-        <p>${escapeHTML(location.contact || 'Contact number not set')}</p>
       </section>
 
       <div class="detail-actions">

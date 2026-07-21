@@ -73,11 +73,10 @@ service cloud.firestore {
     }
 
     function isValidLocation() {
-      return hasOnlyKeys(['name', 'address', 'postcode', 'latitude', 'longitude', 'contact']) &&
+      return hasOnlyKeys(['name', 'address', 'postcode', 'latitude', 'longitude']) &&
         isRequiredString('name', 160) &&
         isRequiredString('address', 240) &&
         isRequiredString('postcode', 16) &&
-        isOptionalString('contact', 160) &&
         request.resource.data.latitude is number &&
         request.resource.data.longitude is number &&
         request.resource.data.latitude >= -90 &&

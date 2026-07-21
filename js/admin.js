@@ -23,10 +23,14 @@ const ADMIN_ROLE_ADMIN = 'admin';
 const ADMIN_ROLE_GLOBAL = 'globalAdmin';
 const INITIAL_GLOBAL_ADMIN_EMAIL = 'peter.cahill@biblesociety.org.uk';
 const DEFAULT_LOCATION_PICKER = {
-  lat: 54.5,
-  lon: -3.0,
-  zoom: 6
+  lat: 54.5742,
+  lon: -1.2348,
+  zoom: 10
 };
+const POSTCODE_LOOKUP_ZOOM = 15;
+const POSTCODE_LOOKUP_DEBOUNCE_MS = 400;
+let addLocationPostcodeLookupTimer = null;
+let editLocationPostcodeLookupTimer = null;
 
 function isValidLatitudeLongitude(lat, lon) {
   return Number.isFinite(lat) &&
@@ -467,6 +471,14 @@ function initializeLocationPickerMap() {
   // Update marker position when lat/lon inputs change
   document.getElementById('locLat').addEventListener('change', updateMarkerPosition);
   document.getElementById('locLon').addEventListener('change', updateMarkerPosition);
+  setupPostcodeMapLookup({
+    postcodeInputId: 'locPostcode',
+    latInputId: 'locLat',
+    lonInputId: 'locLon',
+    getMarker: () => locationPickerMarker,
+    getMap: () => locationPickerMap,
+    timerKey: 'add'
+  });
 }
 
 function updateMarkerPosition() {
@@ -477,6 +489,112 @@ function updateMarkerPosition() {
     locationPickerMarker.setLatLng([lat, lon]);
     locationPickerMap.setView([lat, lon], 15);
   }
+}
+
+function normalizeAdminPostcode(value) {
+  return String(value || '').trim().toUpperCase();
+}
+
+function isCompleteUkPostcode(value) {
+  return /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i.test(String(value || '').trim());
+}
+
+function setLocationPickerPosition({ lat, lon, latInputId, lonInputId, marker, map }) {
+  const latInput = document.getElementById(latInputId);
+  const lonInput = document.getElementById(lonInputId);
+
+  if (latInput) {
+    latInput.value = lat.toFixed(4);
+  }
+
+  if (lonInput) {
+    lonInput.value = lon.toFixed(4);
+  }
+
+  if (marker && map) {
+    marker.setLatLng([lat, lon]);
+    map.setView([lat, lon], POSTCODE_LOOKUP_ZOOM);
+  }
+}
+
+async function lookupLocationPostcode({ postcodeInputId, latInputId, lonInputId, getMarker, getMap, announceFailure = false }) {
+  const postcodeInput = document.getElementById(postcodeInputId);
+  const postcode = normalizeAdminPostcode(postcodeInput?.value);
+
+  if (!postcodeInput || !postcode) {
+    return;
+  }
+
+  postcodeInput.value = postcode;
+
+  if (!isCompleteUkPostcode(postcode)) {
+    if (announceFailure) {
+      showError('Please enter a full UK postcode before positioning the map.');
+    }
+    return;
+  }
+
+  const coords = await postcodeToCoords(postcode);
+
+  if (!coords || !isValidLatitudeLongitude(coords.lat, coords.lon)) {
+    if (announceFailure) {
+      showError('Could not find that postcode. You can still place the marker manually.');
+    }
+    return;
+  }
+
+  setLocationPickerPosition({
+    lat: coords.lat,
+    lon: coords.lon,
+    latInputId,
+    lonInputId,
+    marker: getMarker(),
+    map: getMap()
+  });
+}
+
+function setupPostcodeMapLookup({ postcodeInputId, latInputId, lonInputId, getMarker, getMap, timerKey }) {
+  const postcodeInput = document.getElementById(postcodeInputId);
+
+  if (!postcodeInput) {
+    return;
+  }
+
+  const clearTimer = function() {
+    if (timerKey === 'edit') {
+      clearTimeout(editLocationPostcodeLookupTimer);
+      editLocationPostcodeLookupTimer = null;
+      return;
+    }
+
+    clearTimeout(addLocationPostcodeLookupTimer);
+    addLocationPostcodeLookupTimer = null;
+  };
+
+  const scheduleLookup = function() {
+    clearTimer();
+
+    const postcode = normalizeAdminPostcode(postcodeInput.value);
+    if (!isCompleteUkPostcode(postcode)) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      lookupLocationPostcode({ postcodeInputId, latInputId, lonInputId, getMarker, getMap });
+    }, POSTCODE_LOOKUP_DEBOUNCE_MS);
+
+    if (timerKey === 'edit') {
+      editLocationPostcodeLookupTimer = timer;
+    } else {
+      addLocationPostcodeLookupTimer = timer;
+    }
+  };
+
+  postcodeInput.addEventListener('input', scheduleLookup);
+  postcodeInput.addEventListener('blur', function() {
+    clearTimer();
+    lookupLocationPostcode({ postcodeInputId, latInputId, lonInputId, getMarker, getMap, announceFailure: true });
+  });
 }
 
 function populateLocationDropdown() {
@@ -1064,7 +1182,6 @@ async function addLocation() {
   const postcode = document.getElementById('locPostcode').value.trim().toUpperCase();
   const lat = parseFloat(document.getElementById('locLat').value);
   const lon = parseFloat(document.getElementById('locLon').value);
-  const contact = document.getElementById('locContact').value.trim();
   
   // Validation
   if (!name || !address || !postcode) {
@@ -1091,7 +1208,6 @@ async function addLocation() {
     postcode: postcode,
     latitude: lat,
     longitude: lon,
-    contact: contact,
     events: []
   };
   
@@ -1106,7 +1222,6 @@ async function addLocation() {
     document.getElementById('locPostcode').value = '';
     document.getElementById('locLat').value = '';
     document.getElementById('locLon').value = '';
-    document.getElementById('locContact').value = '';
     
     // Reset marker to default position
     if (locationPickerMarker) {
@@ -1256,11 +1371,10 @@ function displayLocationsList() {
         <div class="admin-list-kicker">${escapeHTML(location.postcode || 'No postcode')}</div>
         <div class="admin-list-title">${escapeHTML(location.name || 'Unnamed location')}</div>
         <div class="admin-list-meta">
-          ${escapeHTML(location.address || 'No address set')}<br/>
-          ${escapeHTML(location.contact || 'No contact')}
+          ${escapeHTML(location.address || 'No address set')}
         </div>
         <div class="admin-list-summary">
-          <span>${locationEvents.length} event${locationEvents.length === 1 ? '' : 's'}</span>
+          <span class="admin-list-summary-value">${locationEvents.length} event${locationEvents.length === 1 ? '' : 's'}</span>
           ${activeCount ? getStatusBadge('active', `${activeCount} active`) : ''}
           ${inactiveCount ? getStatusBadge('inactive', `${inactiveCount} inactive`) : ''}
           ${overCount ? getStatusBadge('over', `${overCount} over`) : ''}
@@ -1335,7 +1449,7 @@ function displayEventsList(locationId = selectedLocationId) {
     metaContainer.innerHTML = `
       <strong>${escapeHTML(location.name || 'Selected location')}</strong><br/>
       ${escapeHTML(location.address || 'No address set')}<br/>
-      ${escapeHTML(location.postcode || 'No postcode')} | ${escapeHTML(location.contact || 'No contact number')}
+      ${escapeHTML(location.postcode || 'No postcode')}
     `;
   }
 
@@ -1364,7 +1478,7 @@ function displayEventsList(locationId = selectedLocationId) {
         </div>
         <div class="admin-list-meta">${escapeHTML(event.description || 'No description')}</div>
         <div class="admin-list-summary">
-          <span>${escapeHTML(event.dayOfWeek || 'Day TBC')} ${escapeHTML(event.time || 'Time TBC')}</span>
+          <span class="admin-list-summary-value">${escapeHTML(event.dayOfWeek || 'Day TBC')} ${escapeHTML(event.time || 'Time TBC')}</span>
         </div>
       </div>
       <div class="admin-list-actions">
@@ -1388,7 +1502,6 @@ function editLocation(locationId) {
     document.getElementById('editLocPostcode').value = location.postcode;
     document.getElementById('editLocLat').value = Number(location.latitude).toFixed(4);
     document.getElementById('editLocLon').value = Number(location.longitude).toFixed(4);
-    document.getElementById('editLocContact').value = location.contact;
     
     openModal('editLocationModal');
     initializeEditLocationPickerMap(location);
@@ -1437,6 +1550,14 @@ function initializeEditLocationPickerMap(location) {
 
     document.getElementById('editLocLat').addEventListener('change', updateEditMarkerPosition);
     document.getElementById('editLocLon').addEventListener('change', updateEditMarkerPosition);
+    setupPostcodeMapLookup({
+      postcodeInputId: 'editLocPostcode',
+      latInputId: 'editLocLat',
+      lonInputId: 'editLocLon',
+      getMarker: () => editLocationPickerMarker,
+      getMap: () => editLocationPickerMap,
+      timerKey: 'edit'
+    });
   }
 
   editLocationPickerMarker.setLatLng([lat, lon]);
@@ -1465,7 +1586,6 @@ async function saveLocationEdit() {
   const postcode = document.getElementById('editLocPostcode').value.trim().toUpperCase();
   const lat = parseFloat(document.getElementById('editLocLat').value);
   const lon = parseFloat(document.getElementById('editLocLon').value);
-  const contact = document.getElementById('editLocContact').value.trim();
   
   if (!name || !address || !postcode) {
     showError('Please fill in all required fields');
@@ -1491,7 +1611,6 @@ async function saveLocationEdit() {
     location.postcode = postcode;
     location.latitude = lat;
     location.longitude = lon;
-    location.contact = contact;
     
     if (await saveLocationToFirestore(location)) {
       closeModal('editLocationModal');
