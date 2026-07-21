@@ -46,7 +46,7 @@ function getFirestoreWriteErrorMessage(error, fallbackMessage) {
     case 'deadline-exceeded':
       return 'Firebase could not be reached. Check your connection and try again.';
     case 'invalid-argument':
-      return 'Firebase rejected one of the location fields. Check the postcode, contact, and coordinates.';
+      return 'Firebase rejected one of the location fields. Check the postcode and coordinates.';
     default:
       return error?.message ? `${fallbackMessage}: ${error.message}` : fallbackMessage;
   }
@@ -97,7 +97,6 @@ const TEXT_LIMITS = Object.freeze({
   description: 1200,
   shortText: 160,
   address: 240,
-  contact: 160,
   url: 500
 });
 
@@ -225,7 +224,6 @@ async function loadEventsDataFromFirestore() {
         postcode: normalizeText(locationData.postcode, 16).toUpperCase(),
         latitude: normalizeCoordinate(locationData.latitude),
         longitude: normalizeCoordinate(locationData.longitude),
-        contact: normalizeText(locationData.contact, TEXT_LIMITS.contact),
         events
       };
 
@@ -501,8 +499,7 @@ async function saveEventsData(data) {
         address: normalizeText(location.address, TEXT_LIMITS.address),
         postcode: normalizeText(location.postcode, 16).toUpperCase(),
         latitude: normalizeCoordinate(location.latitude),
-        longitude: normalizeCoordinate(location.longitude),
-        contact: normalizeText(location.contact, TEXT_LIMITS.contact)
+        longitude: normalizeCoordinate(location.longitude)
       });
 
       const eventsCollection = locRef.collection('events');
@@ -534,8 +531,7 @@ async function saveLocationToFirestore(location) {
       address: normalizeText(location.address, TEXT_LIMITS.address),
       postcode: normalizeText(location.postcode, 16).toUpperCase(),
       latitude: normalizeCoordinate(location.latitude),
-      longitude: normalizeCoordinate(location.longitude),
-      contact: normalizeText(location.contact, TEXT_LIMITS.contact)
+      longitude: normalizeCoordinate(location.longitude)
     });
 
     return true;

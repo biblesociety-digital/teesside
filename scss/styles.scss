@@ -754,7 +754,7 @@ button.success:focus-visible {
 }
 
 .admin-stat-card strong {
-  color: var(--primary-color);
+  color: #00377d;
   display: block;
   font-size: 1.8em;
   line-height: 1;
@@ -1036,6 +1036,14 @@ button.btn-success:hover {
   font-weight: 700;
 }
 
+
+.admin-stat-card strong,
+.admin-section-chip,
+.admin-list-summary,
+.admin-list-summary-value {
+  color: #00377d;
+}
+
 .admin-list-actions,
 .list-item-actions {
   display: flex;
@@ -1107,13 +1115,14 @@ button.btn-success:hover {
 .btn-view {
   background-color: var(--support-blue-750);
   border: 1px solid var(--support-blue-750);
-  color: #ffffff;
+  color: var(--text-dark);
 }
 
 .btn-view:hover,
 .btn-view:focus-visible {
   background-color: var(--btn-primary-hover);
   border-color: var(--support-blue-650);
+  color: #ffffff;
   box-shadow: inset 0 0 0 1px var(--support-blue-650), 0 8px 16px 0 var(--drop-shadow-clr);
 }
 
@@ -2894,7 +2903,7 @@ textarea {
 }
 
 .admin-stat-card strong {
-  color: var(--primary-color);
+  color: #00377d;
   font-weight: 500;
 }
 
@@ -2951,6 +2960,12 @@ textarea {
 .btn-view {
   background: var(--primary-color);
   border-color: var(--primary-color);
+  color: var(--text-dark);
+}
+
+.btn-view:hover,
+.btn-view:focus-visible {
+  color: #ffffff;
 }
 
 .btn-edit {
