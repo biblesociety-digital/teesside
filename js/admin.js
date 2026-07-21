@@ -17,7 +17,11 @@ let attendanceReports = [];
 let authObserverStarted = false;
 let adminInitialized = false;
 let addEventInProgress = false;
+let locationLookupQuery = '';
+let locationLookupId = '';
+let locationListPage = 1;
 
+const LOCATION_PAGE_SIZE = 5;
 const ADMIN_USERS_COLLECTION = 'adminUsers';
 const ADMIN_ROLE_ADMIN = 'admin';
 const ADMIN_ROLE_GLOBAL = 'globalAdmin';
@@ -595,6 +599,80 @@ function setupPostcodeMapLookup({ postcodeInputId, latInputId, lonInputId, getMa
     clearTimer();
     lookupLocationPostcode({ postcodeInputId, latInputId, lonInputId, getMarker, getMap, announceFailure: true });
   });
+}
+
+function resetLocationCreateForm() {
+  ['locName', 'locAddress', 'locPostcode', 'locLat', 'locLon'].forEach(inputId => {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.value = '';
+    }
+  });
+
+  if (locationPickerMarker && locationPickerMap) {
+    locationPickerMarker.setLatLng([DEFAULT_LOCATION_PICKER.lat, DEFAULT_LOCATION_PICKER.lon]);
+    locationPickerMap.setView([DEFAULT_LOCATION_PICKER.lat, DEFAULT_LOCATION_PICKER.lon], DEFAULT_LOCATION_PICKER.zoom);
+  }
+}
+
+function resetEventCreateForm({ keepLocation = false } = {}) {
+  const locationSelect = document.getElementById('evtLocation');
+  const existingLocationId = locationSelect?.value || '';
+
+  ['evtTitle', 'evtDescription', 'evtStartDate', 'evtEndDate', 'evtTime', 'evtEventbriteUrl'].forEach(inputId => {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.value = '';
+    }
+  });
+
+  const eventType = document.getElementById('evtEventType');
+  if (eventType) {
+    eventType.value = DEFAULT_EVENT_TYPE;
+  }
+
+  const status = document.getElementById('evtStatus');
+  if (status) {
+    status.value = 'active';
+  }
+
+  if (locationSelect && !keepLocation) {
+    locationSelect.value = '';
+  } else if (locationSelect) {
+    locationSelect.value = existingLocationId;
+  }
+}
+
+function openCreateLocationModal() {
+  openModal('createLocationModal');
+
+  if (locationPickerMap) {
+    setTimeout(() => {
+      locationPickerMap.invalidateSize();
+      locationPickerMap.setView([DEFAULT_LOCATION_PICKER.lat, DEFAULT_LOCATION_PICKER.lon], DEFAULT_LOCATION_PICKER.zoom);
+    }, 0);
+  }
+}
+
+function openCreateEventModal() {
+  if (selectedLocationId) {
+    const locationSelect = document.getElementById('evtLocation');
+    if (locationSelect) {
+      locationSelect.value = selectedLocationId;
+    }
+  }
+
+  openModal('createEventModal');
+}
+
+function cancelLocationCreateForm() {
+  resetLocationCreateForm();
+  closeModal('createLocationModal');
+}
+
+function cancelEventCreateForm() {
+  resetEventCreateForm();
+  closeModal('createEventModal');
 }
 
 function populateLocationDropdown() {
@@ -1216,21 +1294,14 @@ async function addLocation() {
     // Add to local data after Firebase accepts the write
     eventsData.locations.push(newLocation);
 
-    // Clear form
-    document.getElementById('locName').value = '';
-    document.getElementById('locAddress').value = '';
-    document.getElementById('locPostcode').value = '';
-    document.getElementById('locLat').value = '';
-    document.getElementById('locLon').value = '';
-    
-    // Reset marker to default position
-    if (locationPickerMarker) {
-      locationPickerMarker.setLatLng([DEFAULT_LOCATION_PICKER.lat, DEFAULT_LOCATION_PICKER.lon]);
-      locationPickerMap.setView([DEFAULT_LOCATION_PICKER.lat, DEFAULT_LOCATION_PICKER.lon], DEFAULT_LOCATION_PICKER.zoom);
-    }
+    resetLocationCreateForm();
+    closeModal('createLocationModal');
     
     // Refresh displays
     selectedLocationId = newLocation.id;
+    locationLookupId = newLocation.id;
+    locationLookupQuery = '';
+    locationListPage = 1;
     populateLocationDropdown();
     refreshAdminDisplays();
     
@@ -1317,23 +1388,15 @@ async function addEvent() {
       location.events = getLocationEvents(location).filter(event => event.id !== newEvent.id);
       location.events.push(newEvent);
 
-      // Clear form, keeping the selected location to make adding another event quick.
-      document.getElementById('evtLocation').value = locationId;
-      document.getElementById('evtTitle').value = '';
-      document.getElementById('evtEventType').value = DEFAULT_EVENT_TYPE;
-      document.getElementById('evtDescription').value = '';
-      document.getElementById('evtStartDate').value = '';
-      document.getElementById('evtEndDate').value = '';
-      document.getElementById('evtTime').value = '';
-      document.getElementById('evtEventbriteUrl').value = '';
-      document.getElementById('evtStatus').value = 'active';
+      resetEventCreateForm({ keepLocation: true });
+      closeModal('createEventModal');
 
       selectedLocationId = locationId;
 
       // Refresh displays
       refreshAdminDisplays();
 
-      showSuccess('Event added successfully. You can add another event to this location.');
+      showSuccess('Event added successfully');
     } finally {
       addEventInProgress = false;
 
@@ -1346,20 +1409,99 @@ async function addEvent() {
   }
 }
 
+function getSortedLocations() {
+  return [...(eventsData.locations || [])].sort((a, b) => {
+    return (a.name || '').localeCompare(b.name || '', undefined, { sensitivity: 'base' });
+  });
+}
+
+function getFilteredLocations() {
+  const query = locationLookupQuery.trim().toLowerCase();
+  const locations = getSortedLocations();
+
+  if (locationLookupId) {
+    return locations.filter(location => location.id === locationLookupId);
+  }
+
+  if (!query) {
+    return locations;
+  }
+
+  return locations.filter(location => String(location.name || '').toLowerCase().includes(query));
+}
+
+function syncLocationLookupControls() {
+  const searchInput = document.getElementById('locationSearchInput');
+  const select = document.getElementById('locationLookupSelect');
+
+  if (searchInput && searchInput.value !== locationLookupQuery) {
+    searchInput.value = locationLookupQuery;
+  }
+
+  if (!select) {
+    return;
+  }
+
+  const currentValue = locationLookupId;
+  select.innerHTML = '<option value="">All locations</option>';
+
+  getSortedLocations().forEach(location => {
+    const option = document.createElement('option');
+    option.value = location.id;
+    option.textContent = location.name || 'Unnamed location';
+    select.appendChild(option);
+  });
+
+  select.value = currentValue && getLocationById(currentValue) ? currentValue : '';
+}
+
+function renderLocationsPagination(totalLocations, totalPages) {
+  const pagination = document.getElementById('locationsPagination');
+  if (!pagination) {
+    return;
+  }
+
+  if (totalLocations <= LOCATION_PAGE_SIZE) {
+    pagination.innerHTML = '';
+    return;
+  }
+
+  pagination.innerHTML = `
+    <button class="btn-sm btn-view" type="button" data-location-page-action="previous" ${locationListPage <= 1 ? 'disabled' : ''}>Previous</button>
+    <span class="admin-pagination-status">Page ${locationListPage} of ${totalPages}</span>
+    <button class="btn-sm btn-view" type="button" data-location-page-action="next" ${locationListPage >= totalPages ? 'disabled' : ''}>Next</button>
+  `;
+}
+
 function displayLocationsList() {
   const listContainer = document.getElementById('locationsList');
   if (!listContainer) {
     return;
   }
 
-  const locations = eventsData.locations || [];
+  syncLocationLookupControls();
 
-  if (locations.length === 0) {
+  const allLocations = getSortedLocations();
+  const filteredLocations = getFilteredLocations();
+
+  if (allLocations.length === 0) {
     listContainer.innerHTML = '<p class="admin-empty-state">No locations added yet.</p>';
+    renderLocationsPagination(0, 1);
     return;
   }
 
-  listContainer.innerHTML = locations.map(location => {
+  if (filteredLocations.length === 0) {
+    listContainer.innerHTML = '<p class="admin-empty-state">No locations match that lookup.</p>';
+    renderLocationsPagination(0, 1);
+    return;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(filteredLocations.length / LOCATION_PAGE_SIZE));
+  locationListPage = Math.min(Math.max(locationListPage, 1), totalPages);
+  const startIndex = (locationListPage - 1) * LOCATION_PAGE_SIZE;
+  const pagedLocations = filteredLocations.slice(startIndex, startIndex + LOCATION_PAGE_SIZE);
+
+  listContainer.innerHTML = pagedLocations.map(location => {
     const locationEvents = getLocationEvents(location);
     const activeCount = locationEvents.filter(event => getEventStatus(event) === 'active').length;
     const inactiveCount = locationEvents.filter(event => getEventStatus(event) === 'inactive').length;
@@ -1387,6 +1529,8 @@ function displayLocationsList() {
     </article>
   `;
   }).join('');
+
+  renderLocationsPagination(filteredLocations.length, totalPages);
 }
 
 function handleLocationItemKeydown(event, locationId) {
@@ -1637,6 +1781,11 @@ async function deleteLocation(locationId) {
       selectedLocationId = null;
     }
 
+    if (locationLookupId === locationId) {
+      locationLookupId = '';
+      locationListPage = 1;
+    }
+
     refreshAdminDisplays();
     populateLocationDropdown();
     showSuccess('Location deleted successfully');
@@ -1751,6 +1900,10 @@ document.addEventListener('DOMContentLoaded', function() {
     adminEmailLoginButton: authenticate,
     adminGoogleLoginButton: signInWithGoogle,
     saveAdminUserButton: saveAdminUser,
+    showLocationFormButton: openCreateLocationModal,
+    showEventFormButton: openCreateEventModal,
+    cancelLocationFormButton: cancelLocationCreateForm,
+    cancelEventFormButton: cancelEventCreateForm,
     addLocationButton: addLocation,
     addEventButton: addEvent,
     saveLocationEditButton: saveLocationEdit,
@@ -1766,6 +1919,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   syncDaySelectWithStartDate('evtStartDate', 'evtDay');
   syncDaySelectWithStartDate('editEvtStartDate', 'editEvtDay');
+
+  const createLocationCloseButton = document.getElementById('createLocationCloseButton');
+  if (createLocationCloseButton) {
+    createLocationCloseButton.addEventListener('click', cancelLocationCreateForm);
+  }
+
+  const createEventCloseButton = document.getElementById('createEventCloseButton');
+  if (createEventCloseButton) {
+    createEventCloseButton.addEventListener('click', cancelEventCreateForm);
+  }
 
   const editLocationCloseButton = document.getElementById('editLocationCloseButton');
   if (editLocationCloseButton) {
@@ -1801,6 +1964,48 @@ document.addEventListener('DOMContentLoaded', function() {
   ].filter(Boolean).forEach(filter => {
     filter.addEventListener('change', renderAttendanceReports);
   });
+
+  const locationSearchInput = document.getElementById('locationSearchInput');
+  if (locationSearchInput) {
+    locationSearchInput.addEventListener('input', function() {
+      locationLookupQuery = this.value;
+      locationLookupId = '';
+      locationListPage = 1;
+      displayLocationsList();
+    });
+  }
+
+  const locationLookupSelect = document.getElementById('locationLookupSelect');
+  if (locationLookupSelect) {
+    locationLookupSelect.addEventListener('change', function() {
+      locationLookupId = this.value;
+      locationLookupQuery = '';
+      locationListPage = 1;
+      displayLocationsList();
+
+      if (locationLookupId) {
+        selectLocation(locationLookupId);
+      }
+    });
+  }
+
+  const locationsPagination = document.getElementById('locationsPagination');
+  if (locationsPagination) {
+    locationsPagination.addEventListener('click', function(event) {
+      const actionButton = event.target.closest('[data-location-page-action]');
+      if (!actionButton || actionButton.disabled) {
+        return;
+      }
+
+      if (actionButton.dataset.locationPageAction === 'previous') {
+        locationListPage -= 1;
+      } else if (actionButton.dataset.locationPageAction === 'next') {
+        locationListPage += 1;
+      }
+
+      displayLocationsList();
+    });
+  }
 
   const locationsList = document.getElementById('locationsList');
   if (locationsList) {

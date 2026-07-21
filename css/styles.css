@@ -255,6 +255,7 @@ select:focus {
 }
 
 button {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
@@ -744,9 +745,27 @@ button.success:focus-visible {
   line-height: 1;
 }
 
-.admin-create-grid {
+
+.admin-create-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 24px;
 }
+
+
+.admin-form-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-form-actions .mui-button {
+  width: auto;
+}
+
 
 .user-admin-section {
   margin-bottom: 24px;
@@ -938,6 +957,34 @@ button.btn-success:hover {
 /* ============================================
    Lists
    ============================================ */
+
+.admin-location-lookup {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.7fr);
+  margin-bottom: 16px;
+}
+
+.admin-pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.admin-pagination-status {
+  color: var(--text-muted);
+  font-size: 0.88em;
+  font-weight: 700;
+}
+
+.admin-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .admin-list {
   display: flex;
   flex-direction: column;
@@ -2214,7 +2261,6 @@ body {
 .result-action-button .material-symbols-outlined,
 .view-toggle-button .material-symbols-outlined,
 .event-card-map-link .material-symbols-outlined {
-  transform: translateY(0.12em);
 }
 
 .container {
@@ -2828,13 +2874,6 @@ textarea {
   font-weight: 500;
 }
 
-.admin-create-grid {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 24px;
-}
-
 .admin-section-header {
   border-bottom-color: rgba(0, 0, 0, 0.08);
 }
@@ -2946,8 +2985,28 @@ textarea {
   .search-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .admin-create-grid {
+  .admin-create-actions,
+  .admin-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-create-actions .mui-button,
+  .admin-form-actions .mui-button {
+    width: 100%;
+  }
+
+  .admin-location-lookup {
     grid-template-columns: 1fr;
+  }
+
+  .admin-pagination {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-pagination .btn-sm {
+    width: 100%;
   }
 }
 @media (max-width: 768px) {

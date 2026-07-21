@@ -118,141 +118,15 @@
         </div>
       </section>
 
-      <div class="admin-create-grid">
-        <section>
-          <div class="admin-section">
-            <div class="admin-section-header">
-              <div>
-                <span class="admin-eyebrow">Locations</span>
-                <h2>Add location</h2>
-              </div>
-              <span class="admin-section-chip">Venue</span>
-            </div>
-
-            <div class="form-full">
-              <div class="form-group">
-                <label for="locName">Location Name</label>
-                <input class="mui-input" type="text" id="locName" placeholder="e.g., St. John's Church" />
-              </div>
-              <div class="form-group">
-                <label for="locPostcode">Postcode</label>
-                <input class="mui-input" type="text" id="locPostcode" placeholder="e.g., SW1A 1AA" autocomplete="postal-code" />
-              </div>
-              <div class="form-group">
-                <label for="locAddress">Address</label>
-                <input class="mui-input" type="text" id="locAddress" placeholder="Full address" />
-              </div>
-
-              <div class="form-group">
-                <label>Set Location on Map</label>
-                <p class="field-help">Drag the marker or click the map to set the exact venue position.</p>
-                <div id="locationPickerMap" class="admin-map"></div>
-              </div>
-
-              <div class="admin-form-grid two">
-                <div class="form-group">
-                  <label for="locLat">Latitude</label>
-                  <input class="mui-input" type="number" id="locLat" step="0.0001" placeholder="51.5074" />
-                </div>
-                <div class="form-group">
-                  <label for="locLon">Longitude</label>
-                  <input class="mui-input" type="number" id="locLon" step="0.0001" placeholder="-0.1278" />
-                </div>
-              </div>
-
-              <button class="mui-button mui-button-contained admin-submit" type="button" id="addLocationButton">
-                <span class="material-symbols-outlined" aria-hidden="true">add_location</span>
-                Add Location
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <section>
-          <div class="admin-section">
-            <div class="admin-section-header">
-              <div>
-                <span class="admin-eyebrow">Events</span>
-                <h2>Add event</h2>
-              </div>
-              <span class="admin-section-chip">Programme</span>
-            </div>
-
-            <div class="form-full">
-              <div class="form-group">
-                <label for="evtLocation">Church Location</label>
-                <select class="mui-input" id="evtLocation">
-                  <option value="">Select location</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="evtTitle">Event Title</label>
-                <input class="mui-input" type="text" id="evtTitle" placeholder="e.g., Youth Group" />
-              </div>
-              <div class="form-group">
-                <label for="evtEventType">Event Type</label>
-                <select class="mui-input" id="evtEventType">
-                  <option value="bible-conversation">The Bible Conversation</option>
-                  <option value="bible-course">The Bible Course</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="evtDescription">Description</label>
-                <textarea class="mui-input" id="evtDescription" placeholder="Event details"></textarea>
-              </div>
-
-              <div class="admin-form-grid two">
-                <div class="form-group">
-                  <label for="evtStatus">Event Status</label>
-                  <select class="mui-input" id="evtStatus">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="admin-form-grid two">
-                <div class="form-group">
-                  <label for="evtStartDate">Start Date</label>
-                  <input class="mui-input" type="date" id="evtStartDate" />
-                </div>
-                <div class="form-group">
-                  <label for="evtEndDate">End Date</label>
-                  <input class="mui-input" type="date" id="evtEndDate" />
-                </div>
-              </div>
-
-              <div class="admin-form-grid two">
-                <div class="form-group">
-                  <label for="evtDay">Day of Week</label>
-                  <select class="mui-input" id="evtDay">
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="evtTime">Time</label>
-                  <input class="mui-input" type="time" id="evtTime" />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="evtEventbriteUrl">Eventbrite URL</label>
-                <input class="mui-input" type="url" id="evtEventbriteUrl" placeholder="https://www.eventbrite.com/..." />
-              </div>
-
-              <button class="mui-button mui-button-contained admin-submit" type="button" id="addEventButton">
-                <span class="material-symbols-outlined" aria-hidden="true">add</span>
-                Add Event
-              </button>
-            </div>
-          </div>
-        </section>
+      <div class="admin-create-actions" aria-label="Create admin records">
+        <button class="mui-button mui-button-contained" type="button" id="showLocationFormButton">
+          <span class="material-symbols-outlined" aria-hidden="true">add_location</span>
+          Create location
+        </button>
+        <button class="mui-button mui-button-contained" type="button" id="showEventFormButton">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+          Create event
+        </button>
       </div>
 
       <section class="admin-management-grid">
@@ -264,7 +138,20 @@
             </div>
           </div>
           <p class="section-note">Select a location to view and manage its events.</p>
+          <div class="admin-location-lookup" aria-label="Find a location">
+            <div class="form-group">
+              <label for="locationSearchInput">Search locations</label>
+              <input class="mui-input" type="search" id="locationSearchInput" placeholder="Search by location name" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label for="locationLookupSelect">Select location</label>
+              <select class="mui-input" id="locationLookupSelect">
+                <option value="">All locations</option>
+              </select>
+            </div>
+          </div>
           <div id="locationsList" class="admin-list"></div>
+          <div id="locationsPagination" class="admin-pagination" aria-label="Location pagination"></div>
         </div>
 
         <div class="admin-section">
@@ -287,6 +174,135 @@
   <div id="errorAlert" class="alert error" role="alert"></div>
   <div id="infoAlert" class="alert info" role="status" aria-live="polite"></div>
 
+  <div id="createLocationModal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2>Add Location</h2>
+        <button class="close-btn" type="button" id="createLocationCloseButton">&times;</button>
+      </div>
+      <div class="form-full">
+        <div class="form-group">
+          <label for="locName">Location Name</label>
+          <input class="mui-input" type="text" id="locName" placeholder="e.g., St. John's Church" />
+        </div>
+        <div class="form-group">
+          <label for="locAddress">Address</label>
+          <input class="mui-input" type="text" id="locAddress" placeholder="Full address" />
+        </div>
+        <div class="form-group">
+          <label for="locPostcode">Postcode</label>
+          <input class="mui-input" type="text" id="locPostcode" placeholder="e.g., SW1A 1AA" autocomplete="postal-code" />
+        </div>
+        <div class="form-group">
+          <label>Set Location on Map</label>
+          <p class="field-help">Drag the marker or click the map to set the exact venue position.</p>
+          <div id="locationPickerMap" class="admin-map"></div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="locLat">Latitude</label>
+            <input class="mui-input" type="number" id="locLat" step="0.0001" placeholder="51.5074" />
+          </div>
+          <div class="form-group">
+            <label for="locLon">Longitude</label>
+            <input class="mui-input" type="number" id="locLon" step="0.0001" placeholder="-0.1278" />
+          </div>
+        </div>
+        <div class="admin-form-actions">
+          <button class="mui-button mui-button-contained admin-submit" type="button" id="addLocationButton">
+            <span class="material-symbols-outlined" aria-hidden="true">add_location</span>
+            Add Location
+          </button>
+          <button class="mui-button mui-button-outlined admin-cancel" type="button" id="cancelLocationFormButton">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="createEventModal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2>Add Event</h2>
+        <button class="close-btn" type="button" id="createEventCloseButton">&times;</button>
+      </div>
+      <div class="form-full">
+        <div class="form-group">
+          <label for="evtLocation">Church Location</label>
+          <select class="mui-input" id="evtLocation">
+            <option value="">Select location</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="evtTitle">Event Title</label>
+          <input class="mui-input" type="text" id="evtTitle" placeholder="e.g., Youth Group" />
+        </div>
+        <div class="form-group">
+          <label for="evtEventType">Event Type</label>
+          <select class="mui-input" id="evtEventType">
+            <option value="bible-conversation">The Bible Conversation</option>
+            <option value="bible-course">The Bible Course</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="evtDescription">Description</label>
+          <textarea class="mui-input" id="evtDescription" placeholder="Event details"></textarea>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="evtStatus">Event Status</label>
+            <select class="mui-input" id="evtStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="evtStartDate">Start Date</label>
+            <input class="mui-input" type="date" id="evtStartDate" />
+          </div>
+          <div class="form-group">
+            <label for="evtEndDate">End Date</label>
+            <input class="mui-input" type="date" id="evtEndDate" />
+          </div>
+        </div>
+        <div class="admin-form-grid two">
+          <div class="form-group">
+            <label for="evtDay">Day of Week</label>
+            <select class="mui-input" id="evtDay">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="evtTime">Time</label>
+            <input class="mui-input" type="time" id="evtTime" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="evtEventbriteUrl">Eventbrite URL</label>
+          <input class="mui-input" type="url" id="evtEventbriteUrl" placeholder="https://www.eventbrite.com/..." />
+        </div>
+        <div class="admin-form-actions">
+          <button class="mui-button mui-button-contained admin-submit" type="button" id="addEventButton">
+            <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            Add Event
+          </button>
+          <button class="mui-button mui-button-outlined admin-cancel" type="button" id="cancelEventFormButton">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="editLocationModal" class="modal">
     <div class="modal-content large-modal">
       <div class="modal-header">
@@ -299,12 +315,12 @@
           <input class="mui-input" type="text" id="editLocName" />
         </div>
         <div class="form-group">
-          <label for="editLocPostcode">Postcode</label>
-          <input class="mui-input" type="text" id="editLocPostcode" autocomplete="postal-code" />
-        </div>
-        <div class="form-group">
           <label for="editLocAddress">Address</label>
           <input class="mui-input" type="text" id="editLocAddress" />
+        </div>
+        <div class="form-group">
+          <label for="editLocPostcode">Postcode</label>
+          <input class="mui-input" type="text" id="editLocPostcode" autocomplete="postal-code" />
         </div>
         <div class="form-group">
           <label>Set Location on Map</label>
