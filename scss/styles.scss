@@ -5004,7 +5004,7 @@ body.filter-panel-open .filter-panel {
   background: var(--refresh-teal);
   clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
   height: 100%;
-  padding: 70px 58px 70px 80px;
+  padding: 24px;
   position: relative;
   z-index: 2;
 }
@@ -6394,7 +6394,7 @@ body.filter-panel-open .filter-panel {
 
   .landing-alpha-card {
     align-self: stretch;
-    border: 1px solid #C2C2C2;
+    border: 1px solid #DCDCDC;
     display: flex;
     overflow: hidden;
   }
@@ -10090,13 +10090,15 @@ body.filter-panel-open .filter-panel {
   }
 
   .site-page.landing-page .top-nav,
-  .site-page.faq-page .top-nav {
+  .site-page.faq-page .top-nav,
+  .site-page.bible-converstion-page .top-nav {
     gap: 34px;
     margin-left: auto;
   }
 
   .site-page.landing-page .top-nav a,
-  .site-page.faq-page .top-nav a {
+  .site-page.faq-page .top-nav a,
+  .site-page.bible-converstion-page .top-nav a {
     border-radius: 0;
     color: var(--Text-Main-text-primary-dark, #1E1E1E);
     font-family: var(--font-family-Button, Rustica);
@@ -10112,7 +10114,9 @@ body.filter-panel-open .filter-panel {
   .site-page.landing-page .top-nav a:hover,
   .site-page.landing-page .top-nav a:focus-visible,
   .site-page.faq-page .top-nav a:hover,
-  .site-page.faq-page .top-nav a:focus-visible {
+  .site-page.faq-page .top-nav a:focus-visible,
+  .site-page.bible-converstion-page .top-nav a:hover,
+  .site-page.bible-converstion-page .top-nav a:focus-visible {
     background: transparent;
     color: var(--Text-Button-text-button-tertiary-click-light, #004FB2);
   }
@@ -13450,4 +13454,792 @@ body.result-map-modal-open {
     bottom: 16px;
     width: calc(100% - 32px);
   }
+}
+
+html.bible-converstion-document,
+body.bible-converstion-page {
+  background: #F1F6F6;
+}
+
+.bible-converstion-page .bible-converstion-main {
+  align-items: flex-start;
+  align-self: stretch;
+  background: #F1F6F6;
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  padding: 24px;
+}
+
+.bible-converstion-page .bible-converstion-shell {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 0 0;
+  gap: 24px;
+  max-width: 1264px;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-primary {
+  align-items: stretch;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.bible-converstion-page .bible-converstion-notice {
+  align-items: center;
+  align-self: stretch;
+  background: #FFFFFF;
+  border-bottom: 2px solid #FFFFFF;
+  border-top: 2px solid #FFFFFF;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 12px 24px 8px;
+}
+
+.bible-converstion-page .bible-converstion-notice span {
+  color: #1E1E1E;
+  font-family: Rustica, var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 20px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar {
+  align-items: flex-end;
+  background: #FFFFFF;
+  border: 2px solid #00377D;
+  box-shadow: 0 4px 8px 0 rgba(36, 56, 81, 0.30);
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  max-width: 360px;
+  min-width: 340px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar-header {
+  align-items: center;
+  align-self: stretch;
+  background: #00377D;
+  display: flex;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar-body {
+  align-items: flex-start;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 120px;
+  padding: 8px 24px 24px;
+}
+
+@media (min-width: 821px) {
+  .bible-converstion-page .header-inner,
+  .bible-converstion-page .site-footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+@media (max-width: 820px) {
+  .bible-converstion-page .bible-converstion-shell {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .bible-converstion-page .bible-converstion-primary {
+    flex: 0 1 auto;
+    width: 100%;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar {
+    max-width: none;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .bible-converstion-page .bible-converstion-main {
+    padding: 16px;
+  }
+}
+
+.bible-converstion-page .bible-converstion-search-form {
+  align-self: stretch;
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-search-form .search-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-search-form .form-group {
+  display: grid;
+  gap: 7px;
+}
+
+.bible-converstion-page .bible-converstion-search-form label {
+  color: var(--refresh-ink);
+  font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.bible-converstion-page .bible-converstion-search-form .mui-input {
+  background: #FFFFFF;
+  border: 1px solid #7fa6a2;
+  border-radius: 0;
+  color: #111111;
+  font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 16px;
+  min-height: 48px;
+  padding: 12px;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-age-check {
+  align-items: flex-start;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+}
+
+.bible-converstion-page .bible-converstion-age-check input {
+  accent-color: #00377D;
+  flex: 0 0 auto;
+  height: 18px;
+  margin: 1px 0 0;
+  width: 18px;
+}
+
+.bible-converstion-page .bible-converstion-age-check span {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.bible-converstion-page .hero-search-submit {
+  box-sizing: border-box;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 8px;
+  line-height: 24px;
+  margin-top: 0;
+  min-height: 46px;
+  min-width: 0;
+  padding: 18px 20px 14px;
+  width: 100%;
+}
+
+.bible-converstion-page .hero-search-submit .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.bible-converstion-page #postcodeSearchButton:disabled {
+  background: #D7DCDF;
+  box-shadow: none;
+  color: #6D7479;
+  cursor: not-allowed;
+}
+
+.bible-converstion-page .hero-search-helper {
+  color: #575757;
+  font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  margin: -4px 0 0;
+  max-width: none;
+  text-align: center;
+  width: auto;
+}
+
+.bible-converstion-page .bible-converstion-primary {
+  container-name: bible-converstion-primary;
+  container-type: inline-size;
+}
+
+.bible-converstion-page .bible-converstion-hero {
+  align-items: stretch;
+  background: #D2BEFF;
+  display: grid;
+  grid-template-columns: minmax(0, 50%) minmax(0, 50%);
+  margin: 0;
+  min-height: 283px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-hero-copy {
+  background: #D2BEFF;
+  min-height: 283px;
+  padding: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.bible-converstion-page .bible-converstion-hero .title-wrap {
+  display: inline-block;
+  position: relative;
+}
+
+.bible-converstion-page .bible-converstion-hero h1 {
+  color: #1E1E1E;
+  font-family: var(--font-family-Page-title, "Noe Display"), "Times New Roman", Georgia, serif;
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 64px;
+  margin: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.bible-converstion-page .bible-converstion-hero .hero-teesside-logo {
+  bottom: -43px;
+  height: 86px;
+  max-width: 180px;
+  position: absolute;
+  right: 0;
+  z-index: 3;
+}
+
+.bible-converstion-page .bible-converstion-hero-copy p {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  margin: 0;
+}
+
+.bible-converstion-page .bible-converstion-hero-copy > p:first-of-type {
+  margin: 0;
+}
+
+.bible-converstion-page .bible-converstion-hero .primary-cta {
+  align-items: center;
+  background: var(--refresh-button-blue);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(0, 55, 125, 0.22);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-family-Body, Rustica), Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 24px;
+  margin-top: 30px;
+  min-width: 358px;
+  padding: 17px 22px 15px;
+  text-decoration: none;
+  width: auto;
+}
+
+.bible-converstion-page .bible-converstion-hero-photo {
+  align-self: stretch;
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+  display: block;
+  height: 100%;
+  margin-left: 0;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+@container bible-converstion-primary (max-width: 768px) {
+  .bible-converstion-page .bible-converstion-hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .bible-converstion-page .bible-converstion-hero-photo {
+    clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%);
+    height: auto;
+    margin-left: 0;
+    min-height: 0;
+    object-fit: contain;
+    order: -1;
+    width: 100%;
+  }
+
+  .bible-converstion-page .bible-converstion-hero-copy {
+    clip-path: none;
+    height: auto;
+    min-height: 0;
+    padding: 28px 20px;
+  }
+
+  .bible-converstion-page .bible-converstion-hero h1 {
+    font-size: 54px;
+    line-height: 48px;
+  }
+
+  .bible-converstion-page .bible-converstion-hero .hero-teesside-logo {
+    bottom: -28px;
+    height: 58px;
+    right: 0;
+  }
+
+  .bible-converstion-page .bible-converstion-hero-copy p {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-hero-copy > p:first-of-type {
+    margin: 0;
+  }
+
+  .bible-converstion-page .bible-converstion-hero .primary-cta {
+    box-sizing: border-box;
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.bible-converstion-page .bible-converstion-hero-label {
+  color: #6E6E6E;
+  display: block;
+  font-family: var(--font-family-Lable, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 20px;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.bible-converstion-page .bible-converstion-content-block {
+  align-items: flex-start;
+  align-self: stretch;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.bible-converstion-page .bible-converstion-content-item {
+  align-items: flex-start;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bible-converstion-page .bible-converstion-content-item h2 {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.48px;
+  line-height: 28px;
+  margin: 0 0 16px;
+}
+
+.bible-converstion-page .bible-converstion-content-item p {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0 0 24px;
+}
+
+.bible-converstion-page .bible-converstion-content-item h3 {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  line-height: 28px;
+  margin: 0 0 8px;
+}
+
+.bible-converstion-page .bible-converstion-benefit-list {
+  align-self: stretch;
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bible-converstion-page .bible-converstion-benefit-list li {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin: 0;
+}
+
+.bible-converstion-page .bible-converstion-benefit-list .conversation-step-icon {
+  color: #6f00ff;
+  flex: 0 0 auto;
+  font-family: "Material Symbols Outlined";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 24px;
+}
+
+.bible-converstion-page .bible-converstion-benefit-list li > span:not(.conversation-step-icon) {
+  color: #1E1E1E;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.bible-converstion-page .bible-converstion-content-image-frame {
+  align-self: stretch;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  width: 100%;
+}
+
+.bible-converstion-page .bible-converstion-content-image-frame img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+@media (min-width: 821px) {
+  .bible-converstion-page .bible-converstion-sidebar {
+    position: sticky;
+    top: 90px;
+  }
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 832px;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-item h3 {
+  align-self: stretch;
+  color: var(--Text-Main-text-primary-dark, #1E1E1E);
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  margin: 0 0 8px;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-item p,
+.bible-converstion-page .bible-converstion-content-item .faq-item li {
+  align-self: stretch;
+  color: var(--Text-Main-text-primary-dark, #1E1E1E);
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0 0 24px;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-item p:last-child,
+.bible-converstion-page .bible-converstion-content-item .faq-item li:last-child {
+  margin-bottom: 0;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-item a {
+  color: #0066E5;
+}
+
+.bible-converstion-page .bible-converstion-content-item .faq-more-link {
+  align-items: center;
+  align-self: flex-start;
+  border: 1px solid var(--line-button-btn-sceondary, #414141);
+  border-radius: 100px;
+  color: var(--Text-Main-text-primary-dark, #1E1E1E);
+  display: flex;
+  font-family: var(--font-family-Body, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  justify-content: center;
+  letter-spacing: 0.1px;
+  line-height: 20px;
+  margin-top: 24px;
+  padding: 15px 16px 13px;
+  text-decoration: none;
+  width: auto;
+}
+
+@media (max-width: 1024px) {
+  .bible-converstion-page .bible-converstion-content-item .faq-more-link {
+    align-self: stretch;
+    display: flex;
+    width: 100%;
+  }
+}
+
+@media (max-width: 820px) {
+  .bible-converstion-page .bible-converstion-content-item h2 {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-content-item h3 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-content-item p,
+  .bible-converstion-page .bible-converstion-content-item li,
+  .bible-converstion-page .bible-converstion-content-item li > span:not(.conversation-step-icon) {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-hero h1 {
+    font-size: 54px;
+    line-height: 48px;
+  }
+}
+
+@media (max-width: 820px) {
+  .bible-converstion-page .bible-converstion-content-item .faq-item h3 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-content-item .faq-item p,
+  .bible-converstion-page .bible-converstion-content-item .faq-item li {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bible-converstion-page .bible-converstion-content-item .faq-item h3 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-content-item .faq-item p,
+  .bible-converstion-page .bible-converstion-content-item .faq-item li {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+.bible-converstion-page .bible-converstion-sidebar-header-inner {
+  align-items: center;
+  display: flex;
+  flex: 1 0 0;
+  gap: 8px;
+  padding: 18px 0 14px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar-header-icon {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar-header-icon img {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+
+.bible-converstion-page .bible-converstion-sidebar-header-inner span {
+  color: #FFFFFF;
+  font-family: var(--font-family-Button, Rustica), Rustica, Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  line-height: 24px;
+}
+
+.bible-converstion-page .bible-converstion-drawer-toggle {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  body.bible-converstion-page {
+    padding-bottom: 96px;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    bottom: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    left: 0;
+    max-width: none;
+    min-width: 0;
+    position: fixed;
+    right: 0;
+    width: 100%;
+    z-index: 1100;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar-header {
+    align-items: center;
+    background: #00377D;
+    border-radius: 32px 32px 0 0;
+    box-shadow: 0 -4px 8px 0 rgba(36, 56, 81, 0.30);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 834px;
+    min-height: 0;
+    padding: 0 24px;
+    touch-action: pan-y;
+    width: 100%;
+  }
+
+  .bible-converstion-page .bible-converstion-drawer-toggle {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    min-height: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .bible-converstion-page .bible-converstion-drawer-toggle:hover,
+  .bible-converstion-page .bible-converstion-drawer-toggle:focus,
+  .bible-converstion-page .bible-converstion-drawer-toggle:focus-visible {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    outline: 0;
+  }
+
+  .bible-converstion-page .bible-converstion-drawer-toggle img {
+    display: block;
+    height: 24px;
+    width: 24px;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar-header-inner {
+    align-self: stretch;
+    justify-content: center;
+    padding: 8px 16px 14px;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar-body {
+    align-items: center;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    gap: 14px;
+    margin: 0 auto;
+    max-height: 0;
+    max-width: 834px;
+    min-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 24px;
+    pointer-events: none;
+    transition: max-height 0.28s ease, opacity 0.2s ease, padding 0.28s ease;
+    width: 100%;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar.is-open .bible-converstion-sidebar-body {
+    max-height: calc(100dvh - 118px);
+    opacity: 1;
+    overflow: auto;
+    padding: 8px 24px 24px;
+    pointer-events: auto;
+  }
+
+  .bible-converstion-page .bible-converstion-search-form {
+    align-self: center;
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    max-width: none;
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  body.bible-converstion-page {
+    padding-bottom: 92px;
+  }
+
+  .bible-converstion-page .bible-converstion-sidebar-header,
+  .bible-converstion-page .bible-converstion-sidebar-body {
+    max-width: none;
+  }
+}
+
+@media (min-width: 1331px) {
+  .site-page.bible-converstion-page .header-inner {
+    padding-left: 88px;
+    padding-right: 88px;
+  }
+}
+
+@media (min-width: 821px) and (max-width: 1330px) {
+  .site-page.bible-converstion-page .header-inner {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.site-page.bible-course-page .bible-converstion-hero,
+.site-page.bible-course-page .bible-converstion-hero-copy {
+  background: #D7F087;
 }
